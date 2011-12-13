@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "pag_seguro/version"
 
 Gem::Specification.new do |s|
-  s.name        = "PagSeguro"
+  s.name        = "pag_seguro"
   s.version     = PagSeguro::VERSION
   s.authors     = ["Stefano Diem Benatti"]
   s.email       = ["stefano.diem@gmail.com"]
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{TODO: Write a gem summary}
   s.description = %q{TODO: Write a gem description}
 
-  s.rubyforge_project = "PagSeguro"
+  s.rubyforge_project = "pag_seguro"
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
