@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+%checkout
+  - if payment.id.present?
+    %reference= payment.id
+  - if payment.extra_amount.present?
+    %extraAmount= payment.extra_amount
+  - if payment.redirect_url.present?
+    %redirectUrl= payment.redirect_url
+  - if payment.max_uses.present?
+    %maxUses= payment.max_uses
+  - if payment. max_age.present?
+    %maxAge= payment.max_age
+
+  %currency BRL
+
+  %items
+    - items.each do |item|
+      %item
+        %id= item.id
+        %description= item.description
+        %amount= item.amount
+        %quantity= item.quantity
+        - if item.shipping_cost.present?
+          %shippingCost= item.shipping_cost
+        - if item.weight.present?
+          %weight= item.weight
+
+  - if sender.present?
+    %sender
+      - if sender.name.present?
+        %name= sender.name
+      - if sender.email.present?
+        %email= sender.email
+      %phone
+        - if sender.phone_ddd.present?
+          %areaCode= sender.phone_ddd
+        - if sender.phone_number.present?
+          %number= sender.phone_number
+
+  - if shipping.present?
+    %shipping
+      - if shipping.type.present?
+        %type= shipping.type
+      %address
+        %country BRA
+        - if shipping.state.present?
+          %state= shipping.state
+        - if shipping.city.present?
+          %city= shipping.city
+        - if shipping.postal_code.present?
+          %postalCode= shipping.postal_code
+        - if shipping.district.present?
+          %district= shipping.district
+        - if shipping.street.present?
+          %street= shipping.street
+        - if shipping.number.present?
+          %number= shipping.number
+        - if shipping.complement.present?
+          %complement= shipping.complement
