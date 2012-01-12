@@ -3,3 +3,4 @@
 Gemfile.lock
 pkg/*
 coverage/*
+spec/pag_seguro/integration/config.yml

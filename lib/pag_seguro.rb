@@ -11,6 +11,7 @@ require "item"
 require "payment"
 require "sender"
 require "shipping"
+require "notification"
 
 # Error classes
 require "errors/unauthorized"

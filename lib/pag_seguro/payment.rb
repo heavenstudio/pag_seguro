@@ -1,9 +1,7 @@
 module PagSeguro
   class Payment
     include ActiveModel::Validations
-    
-    CHECKOUT_URL = 'https://ws.pagseguro.uol.com.br/v2/checkout'
-    
+        
     attr_accessor :id, :email, :token, :items, :sender, :shipping, :extra_amount, :redirect_url, :max_uses, :max_age
     
     validates_presence_of :email, :token
@@ -30,7 +28,11 @@ module PagSeguro
     end
     
     def checkout_url_with_params
-      CHECKOUT_URL + "?email=#{@email}&token=#{@token}"
+      "https://ws.pagseguro.uol.com.br/v2/checkout?email=#{@email}&token=#{@token}"
+    end
+    
+    def checkout_payment_url
+      "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=#{code}"
     end
     
     def code

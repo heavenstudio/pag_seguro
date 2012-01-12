@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe PagSeguro::Payment do
-  it "should have a base url to 'ws.pagseguro.uol.com.br/v2/checkout'" do
-    PagSeguro::Payment::CHECKOUT_URL.should == 'https://ws.pagseguro.uol.com.br/v2/checkout'
-  end
-    
   context "instance" do
     context "accessors" do
       before { @payment = PagSeguro::Payment.new }
@@ -87,6 +83,12 @@ describe PagSeguro::Payment do
   context "checking out" do
     it "should have a checkout_url_with_params" do
       PagSeguro::Payment.new("mymail", "mytoken").checkout_url_with_params.should == 'https://ws.pagseguro.uol.com.br/v2/checkout?email=mymail&token=mytoken'
+    end
+    
+    it "should generate a checkout url based on the received response" do
+      payment = PagSeguro::Payment.new("mymail", "mytoken")
+      payment.stub(:code).and_return("aabbcc")
+      payment.checkout_payment_url.should == "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=aabbcc"
     end
   end
 end
