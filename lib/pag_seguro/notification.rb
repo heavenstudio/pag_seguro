@@ -28,6 +28,10 @@ module PagSeguro
     def id
       @data.css("reference").first.content
     end
+    
+    def transaction_id
+      @data.css("code").first.content
+    end
   
     def items
       @data.css("items item").map do |i|

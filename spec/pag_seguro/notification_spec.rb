@@ -12,6 +12,10 @@ describe PagSeguro::Notification do
     @notification.id.should == "REF1234"
   end
   
+  it "should have a transaction id" do
+    @notification.transaction_id.should == "9E884542-81B3-4419-9A75-BCC6FB495EF1"
+  end
+  
   it "should be approved in this case" do
     @notification.should be_approved
   end
