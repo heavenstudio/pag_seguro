@@ -1,6 +1,9 @@
 require 'simplecov'
-SimpleCov.start
+SimpleCov.start do
+  add_filter "spec/"
+end
 
+require 'yaml'
 require File.dirname(__FILE__) + "/../lib/pag_seguro"
 
 class HaveAttributeAccessor
