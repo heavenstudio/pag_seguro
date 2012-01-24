@@ -1,4 +1,4 @@
-$: << "lib/pag_seguro"
+$: << File.expand_path(File.dirname(__FILE__) + "/../lib/pag_seguro")
 
 # Third party gems
 require "active_model"
