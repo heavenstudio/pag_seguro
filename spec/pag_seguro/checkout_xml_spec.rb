@@ -155,9 +155,9 @@ describe PagSeguro::Payment do
       end
       
       it "should not show redirect url unless specified" do
-        Nokogiri::XML(@payment.checkout_xml).css("checkout redirectUrl").should be_empty
+        Nokogiri::XML(@payment.checkout_xml).css("checkout redirectURL").should be_empty
         @payment.redirect_url = "http://heavenstudio.com.br"
-        Nokogiri::XML(@payment.checkout_xml).css("checkout redirectUrl").first.content.should == "http://heavenstudio.com.br"
+        Nokogiri::XML(@payment.checkout_xml).css("checkout redirectURL").first.content.should == "http://heavenstudio.com.br"
       end
       
       it "should not show max uses unless specified" do
