@@ -1,10 +1,6 @@
 # encoding: utf-8
 require 'spec_helper'
 
-config = YAML.load_file(File.dirname(__FILE__) + "/config.yml")
-EMAIL = config["email"]
-TOKEN = config["token"]
-
 def create_valid_payment
   payment = PagSeguro::Payment.new(EMAIL, TOKEN)
   payment.items = [
@@ -18,63 +14,73 @@ def create_valid_payment
   payment
 end
 
-describe "PagSeguro::Payment.code" do
-  it "should send a request to pagseguro" do
-    payment = create_valid_payment
-    payment.code.size.should == 32
-  end
-  
-  it "should be valid even without a sender and shipping information" do
-    payment = create_valid_payment
-    payment.sender = nil
-    payment.shipping = nil
-    payment.code.size.should == 32
-  end
-    
-  it "should tell me when the email and token are invalid" do
-    payment = PagSeguro::Payment.new("not_a_user@not_an_email.com", "NOTATOKEN7F048A09A8AEFDD1E5A7B91")
-    lambda { payment.code }.should raise_error(PagSeguro::Errors::Unauthorized)
-  end
-    
-  it "should list errors given by pagseguro" do
-    payment = PagSeguro::Payment.new(EMAIL, TOKEN)
-    lambda { payment.code }.should raise_error(PagSeguro::Errors::InvalidData)
-  end
-  
-  it "should give a response code of 200 for the user pagseguro url" do
-    payment = create_valid_payment
-    RestClient.get(payment.checkout_payment_url).code.should == 200
-  end
-end
-
-describe "PagSeguro::Payment.date" do
-  it "should send a request to pagseguro" do
-    payment = create_valid_payment
-    payment.date.should match(/^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[-+]\d{2}:\d{2}$/)
-  end
-end
-
-describe "PagSeguro::Payment parse_checkout_response" do
+describe PagSeguro::Payment do
   before do
-    @payment = create_valid_payment
-    @payment.stub(:parse_code)
-    @payment.stub(:parse_date)
-    @payment.stub(:parse_checkout_response){ "some response" }
+    if EMAIL == "seu_email_cadastrado@nopagseguro.com.br"
+      pending "You need to set your email for your PagSeguro account in spec/pag_seguro/integration/config.yml in order to run this spec"
+    elsif TOKEN == "SEU_TOKEN_GERADO_NO_PAG_SEGURO"
+      pending "You need to set your token for your PagSeguro account in spec/pag_seguro/integration/config.yml in order to run this spec"
+    end
   end
   
-  it "should not make a request to pagseguro more than once" do
-    @payment.should_receive(:parse_checkout_response).exactly(1).times
+  describe "#code" do
+    it "should send a request to pagseguro" do
+      payment = create_valid_payment
+      payment.code.size.should == 32
+    end
+  
+    it "should be valid even without a sender and shipping information" do
+      payment = create_valid_payment
+      payment.sender = nil
+      payment.shipping = nil
+      payment.code.size.should == 32
+    end
     
-    @payment.code
-    @payment.code
-    @payment.date
-  end
+    it "should tell me when the email and token are invalid" do
+      payment = PagSeguro::Payment.new("not_a_user@not_an_email.com", "NOTATOKEN7F048A09A8AEFDD1E5A7B91")
+      lambda { payment.code }.should raise_error(PagSeguro::Errors::Unauthorized)
+    end
+    
+    it "should list errors given by pagseguro" do
+      payment = PagSeguro::Payment.new(EMAIL, TOKEN)
+      lambda { payment.code }.should raise_error(PagSeguro::Errors::InvalidData)
+    end
   
-  it "should be make more than one request to pag seguro if the payment is reset" do
-    @payment.should_receive(:parse_checkout_response).exactly(2).times
+    it "should give a response code of 200 for the user pagseguro url" do
+      payment = create_valid_payment
+      RestClient.get(payment.checkout_payment_url).code.should == 200
+    end
+  end
 
-    @payment.code
-    @payment.reset!
-    @payment.date
+  describe "#date" do
+    it "should send a request to pagseguro" do
+      payment = create_valid_payment
+      payment.date.should match(/^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[-+]\d{2}:\d{2}$/)
+    end
+  end
+
+  describe "#parse_checkout_response" do
+    before do
+      @payment = create_valid_payment
+      @payment.stub(:parse_code)
+      @payment.stub(:parse_date)
+      @payment.stub(:parse_checkout_response){ "some response" }
+    end
+  
+    it "should not make a request to pagseguro more than once" do
+      @payment.should_receive(:parse_checkout_response).exactly(1).times
+    
+      @payment.code
+      @payment.code
+      @payment.date
+    end
+  
+    it "should make more than one request to pag seguro if the payment is reset" do
+      @payment.should_receive(:parse_checkout_response).exactly(2).times
+
+      @payment.code
+      @payment.reset!
+      @payment.date
+    end
   end
 end

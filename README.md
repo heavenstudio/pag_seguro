@@ -18,16 +18,17 @@ Além disso, é necessário que tenha uma conta no pag seguro, e que habilite as
     Em Integrações -> Pagamentos via API é necessário ativar a opção "Quero receber somente pagamentos via API."
     Em Integrações -> Notificação de transações é necessário ativar a notificação de transações e definir a url de retorno
 	
-## Documentação da API e dos attributos
+## Documentação
+### Classes e Atributos
 
-A nomenclatura dos atributos esperados pelo PagSeguro foram mantidas porém no padrão underscore (que é o padrão de ruby, ao invés do camelcase utilizado pelo pagseguro). Seguem os links das documentações dos attributos no pagseguro:
+A nomenclatura dos atributos e recursos (classes) esperados pelo PagSeguro foram mantidas porém usando o padrão de nomenclatura do ruby (ao invés do camelcase utilizado pelo pagseguro). Seguem os links das documentações dos atributos no pagseguro:
 
 * [API de pagamentos](https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-pagamentos.html#v2-item-api-de-pagamentos-parametros-api)
 * [API de notificação](https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html)
 
-## Documentação
+###  API de Pagamento
 
-Segue um exemplo de uso desta gem (para mais exemplos, olhe o arquivo spec/integration/checkout_spec.rb):
+Segue um exemplo de uso para criação de um pagamento no PagSeguro:
 
     payment = PagSeguro::Payment.new(EMAIL, TOKEN)
     
@@ -38,7 +39,40 @@ Segue um exemplo de uso desta gem (para mais exemplos, olhe o arquivo spec/integ
     
     redirect_to_url = payment.checkout_payment_url
     
-Além dos items presentes no exemplo acima, é possível configurar `payment.sender` (com informações do usuário que está efetuando a compra) e `payment.shipping` ( com as informações de endereço ).
+O método checkout_payment_url envia as informações de `payment` ao PagSeguro e em caso de sucesso gera a url do PagSeguro para qual o comprador deverá ser redirecionado para efetuar a compra.
+
+Além dos items presentes no exemplo acima, é possível configurar `payment.sender` (com informações do usuário que está efetuando a compra), `payment.shipping` ( com as informações de endereço ), entre outras opções (para mais exemplos, olhe o arquivo spec/integration/checkout_spec.rb). Em especial, o attributo `payment.id` deve ser utilizado para referenciar um pagamento único no seu sistema.
+
+Com exceção do atributo response (que é utilizado para armazenar a resposta enviada pelo PagSeguro), todos os outros atributos podem ser inicialidos em formato hash na inicialização do `PagSeguro::Payment`:
+
+    payment = PagSeguro::Payment.new(EMAIL, TOKEN, id: 2, items: [ PagSeguro::Item.new(id: 17, description: "A pipe", amount: "3.00",  quantity: "89") ], extra_amount: '1.00' )
+
+### API de Notificação
+
+As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na Notificação de transações (vide Instalação). Obs.: Até o momento o PagSeguro não permite configurar uma url dinâmica para envio das notificação ( e apenas permite uma url por conta ), então provavelemente será necessário que crie uma conta diferente no PagSeguro para cada sistema que desenvolver.
+
+O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST ( lembre-se de adicionar uma rota post respectiva ). Segue um exemplo de uso da notificação em uma aplicação rails:
+
+    class PagSeguroNotificationController < ApplicationController
+      def parse_notification
+        EMAIL = "seu_email_cadastrado@nopagseguro.com.br"
+        TOKEN = "SEU_TOKEN_GERADO_NO_PAG_SEGURO"
+        NOTIFICATION_CODE = params(:notificationCode)
+        
+        notification = PagSeguro::Notification.new(EMAIL, TOKEN, NOTIFICATION_CODE)
+        
+        if notification.approved?
+          # Idealmente faça alguns testes de sanidade, como notification.gross_amount, notification.item_count, etc
+          # notification.id referencia o id do payment, caso tenha sido configurado
+          # transacation_id identifica o código da transação no pag seguro
+          Invoice.find(notification.id).approve!(notification.transaction_id)
+        end
+        
+        if notification.cancelled? || notification.returned?
+          Invoice.find(notification.id).void!
+        end
+      end
+    end
 
 ## Validações
 
@@ -46,7 +80,7 @@ Os modelos utilizados nesta gem utilizam as validações do ActiveModel (semelha
 
 ## Testes
 
-Esta gem possui testes extensivos utilizando Rspec. Para rodar os estes, altere o arquivo spec/pag_seguro/integration/config.yml com seus dados no pag_seguro, entre na pasta onde a gem está instalada e execute:
+Esta gem possui testes extensivos utilizando Rspec. Para rodar os testes, altere o arquivo spec/pag_seguro/integration/config.yml com seus dados no pag_seguro, entre na pasta onde a gem está instalada e execute:
 
     bundle
     guard

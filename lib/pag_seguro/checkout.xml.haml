@@ -39,7 +39,7 @@
 
   - if shipping.present?
     %shipping
-      - if shipping.type.present?
+      - if !shipping.type.zero?
         %type= shipping.type
       %address
         %country BRA

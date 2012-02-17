@@ -102,7 +102,7 @@ describe PagSeguro::Payment do
       
       it "should have shipping type" do
         @xml_without_shipping_info.css("checkout shipping type").should be_empty
-        @xml.css("checkout shipping type").first.content.to_i.should == PagSeguro::Shipping::SEDEX
+        @xml.css("checkout shipping type").first.content.to_i.should == 2
       end
 
       it "should have state" do

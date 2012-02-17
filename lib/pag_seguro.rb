@@ -9,6 +9,7 @@ require "rest-client"
 # PagSeguro classes
 require "item"
 require "payment"
+require "payment_method"
 require "sender"
 require "shipping"
 require "notification"

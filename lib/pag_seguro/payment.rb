@@ -63,7 +63,7 @@ module PagSeguro
       end
             
       def send_checkout
-        RestClient.post(checkout_url_with_params, checkout_xml, content_type: "application/xml"){|response, request, result| response }
+        RestClient.post(checkout_url_with_params, checkout_xml, content_type: "application/xml"){|resp, request, result| resp }
       end
       
       def parse_checkout_response
@@ -76,7 +76,7 @@ module PagSeguro
           raise Errors::InvalidData.new(response.body)
         else
           raise Errors::UnknownError.new(response)
-        end        
+        end
       end
       
       def parse_date

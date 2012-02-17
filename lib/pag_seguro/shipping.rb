@@ -4,7 +4,7 @@ module PagSeguro
     
     PAC = 1
     SEDEX = 2
-    NOT_IDENTIFIED = 3
+    UNIDENTIFIED = 3
     
     validates_format_of :postal_code, with: /^\d{8}$/, message: " must be an integer with 8 digits", allow_blank: true
     
@@ -24,6 +24,22 @@ module PagSeguro
     
     def postal_code
       @postal_code if @postal_code.present? && @postal_code.to_s.size == 8
+    end
+    
+    def type
+      @type.to_i
+    end
+    
+    def pac?
+      PAC == type
+    end
+    
+    def sedex?
+      SEDEX == type
+    end
+    
+    def unidentified?
+      UNIDENTIFIED == type
     end
   end
 end

@@ -107,28 +107,36 @@ describe PagSeguro::Payment do
     describe "parse_checkout_response" do
       before do
         @payment = PagSeguro::Payment.new("mymail", "mytoken")
-        @response = double("response")
-        @payment.stub(:send_checkout){ @response }
+      end
+
+      it "should not raise errors if response code is 200" do
+        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 200 }
+        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some body info" }
+        lambda { @payment.send(:parse_checkout_response) }.should_not raise_error
       end
       
       it "should raise PagSeguro::Errors::InvalidData if response code is 400" do
-        @response.stub(code: 400, body: "some error description")
+        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 400 }
+        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some error description" }
         lambda { @payment.send(:parse_checkout_response) }.should raise_error(PagSeguro::Errors::InvalidData)
       end
       
       it "should raise PagSeguro::Errors::Unauthorized if response code is 400" do
-        @response.stub(code: 401)
+        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 401 }
         lambda { @payment.send(:parse_checkout_response) }.should raise_error(PagSeguro::Errors::Unauthorized)
       end
-      
-      it "should not raise errors if response code is 200" do
-        @response.stub(code: 200, body: "some response body")
-        lambda { @payment.send(:parse_checkout_response) }.should_not raise_error
+            
+      it "should raise PagSeguro::Errors::UnknownError if response code is not 200, 400 or 401" do
+        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 300 }
+        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some response body" }
+        lambda { @payment.send(:parse_checkout_response) }.should raise_error(PagSeguro::Errors::UnknownError)
       end
       
-      it "should raise PagSeguro::Errors::UnknownError if response code is not 200, 400 or 401" do
-        @response.stub(code: 300, body: "some response body")
-        lambda { @payment.send(:parse_checkout_response) }.should raise_error(PagSeguro::Errors::UnknownError)
+      it "should be able to reset response" do
+        @payment.response = "something"
+        @payment.response.should be_present
+        @payment.reset!
+        @payment.response.should be_nil
       end
     end
     

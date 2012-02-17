@@ -23,6 +23,23 @@ describe PagSeguro::Shipping do
     it { @shipping.should have_attribute_accessor(:street) }
     it { @shipping.should have_attribute_accessor(:number) }
     it { @shipping.should have_attribute_accessor(:complement) }
+    
+    describe "types" do
+      it "should be pac if type is 1" do
+        @shipping.stub( :type ){ 1 }
+        @shipping.should be_pac
+      end
+      
+      it "should be sedex if type is 2" do
+        @shipping.stub( :type ){ 2 }
+        @shipping.should be_sedex
+      end
+      
+      it "should be unidentified if type is 3" do
+        @shipping.stub( :type ){ 3 }
+        @shipping.should be_unidentified
+      end
+    end
   end
   
   it "should be able to initialize all attributes" do
