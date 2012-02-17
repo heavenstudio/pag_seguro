@@ -22,6 +22,10 @@ module PagSeguro
       @max_age      = options[:max_age]
     end
     
+    def self.checkout_payment_url(code)
+      "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=#{code}"
+    end
+    
     def checkout_xml
       xml_content = File.open( File.dirname(__FILE__) + "/checkout.xml.haml" ).read
       Haml::Engine.new(xml_content).render(nil, items: @items, payment: self, sender: @sender, shipping: @shipping)
@@ -32,7 +36,7 @@ module PagSeguro
     end
     
     def checkout_payment_url
-      "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=#{code}"
+      self.class.checkout_payment_url(code)
     end
     
     def code
