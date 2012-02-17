@@ -23,6 +23,13 @@ describe "PagSeguro::Payment.code" do
     payment = create_valid_payment
     payment.code.size.should == 32
   end
+  
+  it "should be valid even without a sender and shipping information" do
+    payment = create_valid_payment
+    payment.sender = nil
+    payment.shipping = nil
+    payment.code.size.should == 32
+  end
     
   it "should tell me when the email and token are invalid" do
     payment = PagSeguro::Payment.new("not_a_user@not_an_email.com", "NOTATOKEN7F048A09A8AEFDD1E5A7B91")
