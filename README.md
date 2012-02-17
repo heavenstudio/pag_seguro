@@ -9,6 +9,7 @@ Adicione a `gem "pag_seguro"` ao seu Gemfile:
     gem 'pag_seguro'
 	
 Além disso, é necessário que tenha uma conta no pag seguro, e que habilite as seguintes configurações:
+
     Em Integrações -> Token de segurança clique em Gerar novo token e guarde esta informação em local seguro
     Em Integrações -> Pagamentos via API é necessário ativar a opção "Quero receber somente pagamentos via API."
     Em Integrações -> Notificação de transações é necessário ativar a notificação de transações e definir a url de retorno
