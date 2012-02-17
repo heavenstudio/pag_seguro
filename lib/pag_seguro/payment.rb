@@ -2,7 +2,7 @@ module PagSeguro
   class Payment
     include ActiveModel::Validations
         
-    attr_accessor :id, :email, :token, :items, :sender, :shipping, :extra_amount, :redirect_url, :max_uses, :max_age
+    attr_accessor :id, :email, :token, :items, :sender, :shipping, :extra_amount, :redirect_url, :max_uses, :max_age, :response
     
     validates_presence_of :email, :token
     validates_format_of :extra_amount, with: /^\d+\.\d{2}$/, message: " must be a decimal and have 2 digits after the dot", allow_blank: true
@@ -36,16 +36,17 @@ module PagSeguro
     end
     
     def code
-      response = send_checkout
-      if response.code == 200
-        Nokogiri::XML(response.body).css("checkout code").first.content
-      elsif response.code == 401
-        raise Errors::Unauthorized
-      elsif response.code == 400
-        raise Errors::InvalidData.new(response.body)
-      else
-        raise Errors::UnknownError.new(response)
-      end
+      @response ||= parse_checkout_response
+      parse_code
+    end
+    
+    def date
+      @response ||= parse_checkout_response
+      parse_date
+    end
+    
+    def reset!
+      @response = nil
     end
     
     protected
@@ -59,6 +60,27 @@ module PagSeguro
             
       def send_checkout
         RestClient.post(checkout_url_with_params, checkout_xml, content_type: "application/xml"){|response, request, result| response }
+      end
+      
+      def parse_checkout_response
+        response = send_checkout
+        if response.code == 200
+          response.body
+        elsif response.code == 401
+          raise Errors::Unauthorized
+        elsif response.code == 400
+          raise Errors::InvalidData.new(response.body)
+        else
+          raise Errors::UnknownError.new(response)
+        end        
+      end
+      
+      def parse_date
+        Nokogiri::XML(@response.body).css("checkout date").first.content
+      end
+      
+      def parse_code
+        Nokogiri::XML(@response.body).css("checkout code").first.content
       end
   end
 end

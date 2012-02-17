@@ -15,6 +15,15 @@ describe PagSeguro::Payment do
       it { @payment.should have_attribute_accessor(:redirect_url) }
       it { @payment.should have_attribute_accessor(:max_uses) }
       it { @payment.should have_attribute_accessor(:max_age) }
+      it { @payment.should have_attribute_accessor(:response) }
+
+      it "should respond to :code" do
+        @payment.respond_to?(:code).should be_true
+      end
+
+      it "should respond to :date" do
+        @payment.respond_to?(:date).should be_true
+      end
 
       it "should have items" do
         @payment.items.should be_instance_of(Array)
