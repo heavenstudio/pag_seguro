@@ -4,6 +4,8 @@ Esta gem foi criada com o intuito de facilitar o uso da versão 2 das APIs do Pa
 
 Utilizando esta gem é possível enviar informações de compra ao pag seguro sem necessitar renderizar um formulário, impedindo o usuário de forjar informações pois as informações são trocadas apenas entre a sua aplicação e o pagseguro sem intermédio do usuário.
 
+Esta gem foi desenvolvida para utilizar Ruby 1.9.2 ou superior, e não têm compatibilidade com versões anteriores. Caso deseje utilizar esta gem com versões anteriores de ruby, faça um fork desta gem e corrija os problemas encontrados.
+
 ## Instalação
 
 Adicione a `gem "pag_seguro"` ao seu Gemfile:
