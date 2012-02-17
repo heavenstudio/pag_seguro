@@ -1,8 +1,8 @@
 module PagSeguro
   module Errors
-    class UnknownError
+    class UnknownError < Exception
       def initialize(response)
-        super("Unknown response code (#{response.code}):\n#{reponse.body}")
+        super("Unknown response code (#{response.code}):\n#{response.body}")
       end
     end
   end

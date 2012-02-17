@@ -55,4 +55,14 @@ describe PagSeguro::Notification do
     @items[1].quantity.should == "1"
     @items[1].amount.should == "25600.00"
   end
+  
+  it "should be_available if its status is 4" do
+    @notification.stub(:status){ 4 }
+    @notification.should be_available
+  end
+  
+  it "should be_approved if its status is 3" do
+    @notification.stub(:status){ 3 }
+    @notification.should be_approved
+  end
 end
