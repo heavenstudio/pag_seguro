@@ -1,6 +1,8 @@
 # PagSeguro
 
-Esta gem foi criada com o intuito de facilitar o uso da versão 2 das APIs do PagSeguro, como pagamento e notificações através de código Ruby. Esta gem não depende de rails e portanto pode ser utilizada com uma aplicação Rack ou como Backend de outra aplicação sem precisar carregar um environment rails. Utilizando esta gem é possível enviar informações de compra ao pag seguro sem necessitar renderizar um formulário, impedindo o usuário de forjar informações pois as informações são trocadas apenas entre a sua aplicação e o pagseguro sem intermédio do usuário.
+Esta gem foi criada com o intuito de facilitar o uso da versão 2 das APIs do PagSeguro, como pagamento e notificações através de código Ruby. Esta gem não depende de rails e portanto pode ser utilizada com uma aplicação Rack ou como Backend de outra aplicação sem precisar carregar um environment rails.
+
+Utilizando esta gem é possível enviar informações de compra ao pag seguro sem necessitar renderizar um formulário, impedindo o usuário de forjar informações pois as informações são trocadas apenas entre a sua aplicação e o pagseguro sem intermédio do usuário.
 
 ## Instalação
 
@@ -42,7 +44,7 @@ Os modelos utilizados nesta gem utilizam as validações do ActiveModel (semelha
 
 ## Testes
 
-Esta gem possui testes extensivos utilizando Rspec. Para rodar os estes, altere o arquivo spec/pag_seguro/integration/config.yml com seus dados no pag_seguro, e execute:
+Esta gem possui testes extensivos utilizando Rspec. Para rodar os estes, altere o arquivo spec/pag_seguro/integration/config.yml com seus dados no pag_seguro, entre na pasta onde a gem está instalada e execute:
 
     bundle
     guard
@@ -57,4 +59,4 @@ Permitir realizar [consultas de transações](https://pagseguro.uol.com.br/v2/gu
 
 ## Sobre
 
-Desenvolvida por [Stefano Diem Benatti](stefano.diem@gmail.com)
+Desenvolvida por [Stefano Diem Benatti](mailto:stefano.diem@gmail.com)
