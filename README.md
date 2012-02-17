@@ -4,7 +4,7 @@ Esta gem foi criada com o intuito de facilitar o uso da versão 2 das APIs do Pa
 
 ## Instalação
 
-Adicione a gem "pag_seguro" ao seu Gemfile:
+Adicione a `gem "pag_seguro"` ao seu Gemfile:
 
     gem 'pag_seguro'
 	
@@ -33,7 +33,7 @@ Segue um exemplo de uso desta gem (para mais exemplos, olhe o arquivo spec/integ
     
     redirect_to_url = payment.checkout_payment_url
     
-Além dos items presentes no exemplo acima, é possível configurar payment.sender (com informações do usuário que está efetuando a compra) e `payment.shipping` ( com as informações de endereço ).
+Além dos items presentes no exemplo acima, é possível configurar `payment.sender` (com informações do usuário que está efetuando a compra) e `payment.shipping` ( com as informações de endereço ).
 
 ## Validações
 
