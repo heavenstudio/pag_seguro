@@ -65,7 +65,7 @@ module PagSeguro
     end
     
     def date
-      @data.css("date").first.content
+      DateTime.iso8601( @data.css("date").first.content )
     end
   
     def items

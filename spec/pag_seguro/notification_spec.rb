@@ -67,7 +67,10 @@ describe PagSeguro::Notification do
   
   it "should have a date" do
     @notification.date.should be_present
-    @notification.date.should match(/^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[-+]\d{2}:\d{2}$/)
+    @notification.date.should be_an_instance_of(DateTime)
+    @notification.date.year.should == 2011
+    @notification.date.month.should == 2
+    @notification.date.day.should == 10
   end
   
   it "should have a shipping" do

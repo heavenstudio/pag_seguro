@@ -80,7 +80,7 @@ module PagSeguro
       end
       
       def parse_date
-        Nokogiri::XML(@response.body).css("checkout date").first.content
+        DateTime.iso8601( Nokogiri::XML(@response.body).css("checkout date").first.content )
       end
       
       def parse_code

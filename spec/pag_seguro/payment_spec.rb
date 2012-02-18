@@ -24,6 +24,17 @@ describe PagSeguro::Payment do
       it "should respond to :date" do
         @payment.respond_to?(:date).should be_true
       end
+      
+      it "should have a DateTime object as date" do
+        response = double("response")
+        response.stub(body: "<checkout><date>2001-02-03T04:05:06+07:00</date></checkout>")
+        @payment.instance_variable_set(:"@response", response)
+        date = @payment.send(:parse_date)
+        date.should be_an_instance_of(DateTime)
+        date.year.should == 2001
+        date.month.should == 2
+        date.day.should == 3
+      end
 
       it "should have items" do
         @payment.items.should be_instance_of(Array)

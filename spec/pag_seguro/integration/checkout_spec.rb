@@ -55,7 +55,7 @@ describe PagSeguro::Payment do
   describe "#date" do
     it "should send a request to pagseguro" do
       payment = create_valid_payment
-      payment.date.should match(/^\d{4}\-\d{2}\-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}[-+]\d{2}:\d{2}$/)
+      payment.date.should be_an_instance_of(DateTime)
     end
   end
 
