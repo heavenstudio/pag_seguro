@@ -101,7 +101,7 @@ describe PagSeguro::Payment do
       end
       
       it "should have shipping type" do
-        @xml_without_shipping_info.css("checkout shipping type").should be_empty
+        @xml_without_shipping_info.css("checkout shipping type").first.content.to_i.should == PagSeguro::Shipping::UNIDENTIFIED
         @xml.css("checkout shipping type").first.content.to_i.should == 2
       end
 

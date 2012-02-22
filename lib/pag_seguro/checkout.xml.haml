@@ -41,6 +41,8 @@
     %shipping
       - if !shipping.type.zero?
         %type= shipping.type
+      - else
+        %type 3
       %address
         %country BRA
         - if shipping.state.present?

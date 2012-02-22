@@ -30,9 +30,8 @@ describe PagSeguro::Payment do
     end
   
     it "should be valid even without a sender and shipping information" do
-      payment = create_valid_payment
-      payment.sender = nil
-      payment.shipping = nil
+      payment = PagSeguro::Payment.new(EMAIL, TOKEN)
+      payment.items = [PagSeguro::Item.new(id: 17, description: "A pipe", amount: "3.00",  quantity: "2")]
       payment.code.size.should == 32
     end
     
