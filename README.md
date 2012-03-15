@@ -73,7 +73,7 @@ Com exceção do atributo response (que é utilizado para armazenar a resposta e
 
 As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na Notificação de transações (vide Instalação). Obs.: Até o momento o PagSeguro não permite configurar uma url dinâmica para envio das notificação ( e apenas permite uma url por conta ), então provavelemente será necessário que crie uma conta diferente no PagSeguro para cada sistema que desenvolver.
 
-O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST. Segue um exemplo de uso da notificação em uma aplicação rails (este exemplo supõe a existência de um `resource :notifications` em suas rotas, e um modelo `Invoice` responsável pelos pagamentos):
+O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST. Segue um exemplo de uso da notificação em uma aplicação rails (este exemplo supõe a existência de um `resources :notifications` em suas rotas, e um modelo `Invoice` responsável pelos pagamentos):
 
     class NotificationsController < ApplicationController
       def create
