@@ -14,7 +14,7 @@ module PagSeguro
       @token        = token unless token.nil?
       @id           = options[:id]
       @sender       = options[:sender] || Sender.new
-      @shipping     = options[:shipping] || Shipping.new
+      @shipping     = options[:shipping]
       @items        = options[:items] || []
       @extra_amount = options[:extra_amount]
       @redirect_url = options[:redirect_url]

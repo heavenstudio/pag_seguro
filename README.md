@@ -43,7 +43,29 @@ O método checkout_payment_url envia as informações de `payment` ao PagSeguro 
 
 Além dos items presentes no exemplo acima, é possível configurar `payment.sender` (com informações do usuário que está efetuando a compra), `payment.shipping` ( com as informações de endereço ), entre outras opções (para mais exemplos, olhe o arquivo spec/integration/checkout_spec.rb). Em especial, o attributo `payment.id` deve ser utilizado para referenciar um pagamento único no seu sistema.
 
-Com exceção do atributo response (que é utilizado para armazenar a resposta enviada pelo PagSeguro), todos os outros atributos podem ser inicialidos em formato hash na inicialização do `PagSeguro::Payment`:
+Segue um exemplo mais completo do uso da api de pagamentos:
+
+    payment = PagSeguro::Payment.new(EMAIL, TOKEN)
+    
+    payment.items = [
+      PagSeguro::Item.new(id: 25, description: "A Bic Pen", amount: "1.50",  quantity: "4", shipping_cost: "1.00",  weight: 10),
+      PagSeguro::Item.new(id: 17, description: "A pipe",    amount: "3.00",  quantity: "89")
+    ]
+    
+    payment.sender = PagSeguro::Sender.new(name: "Stefano Diem Benatti", email: "stefano@heavenstudio.com.br", phone_ddd: "11", phone_number: "93430994")
+    payment.shipping = PagSeguro::Shipping.new(
+      type: PagSeguro::Shipping::SEDEX,
+      state: "SP",
+      city: "São Paulo", postal_code: "05363000",
+      district: "Jd. PoliPoli",
+      street: "Av. Otacilio Tomanik",
+      number: "775",
+      complement: "apto. 92")
+    
+    redirect_to_url = payment.checkout_payment_url
+    
+
+Com exceção do atributo response (que é utilizado para armazenar a resposta enviada pelo PagSeguro), todos os outros atributos podem ser inicializados em formato hash na inicialização do `PagSeguro::Payment`:
 
     payment = PagSeguro::Payment.new(EMAIL, TOKEN, id: 2, items: [ PagSeguro::Item.new(id: 17, description: "A pipe", amount: "3.00",  quantity: "89") ], extra_amount: '1.00' )
 
@@ -51,10 +73,10 @@ Com exceção do atributo response (que é utilizado para armazenar a resposta e
 
 As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na Notificação de transações (vide Instalação). Obs.: Até o momento o PagSeguro não permite configurar uma url dinâmica para envio das notificação ( e apenas permite uma url por conta ), então provavelemente será necessário que crie uma conta diferente no PagSeguro para cada sistema que desenvolver.
 
-O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST ( lembre-se de adicionar uma rota post respectiva ). Segue um exemplo de uso da notificação em uma aplicação rails:
+O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST. Segue um exemplo de uso da notificação em uma aplicação rails (este exemplo supõe a existência de um `resource :notifications` em suas rotas, e um modelo `Invoice` responsável pelos pagamentos):
 
-    class PagSeguroNotificationController < ApplicationController
-      def parse_notification
+    class NotificationsController < ApplicationController
+      def create
         EMAIL = "seu_email_cadastrado@nopagseguro.com.br"
         TOKEN = "SEU_TOKEN_GERADO_NO_PAG_SEGURO"
         NOTIFICATION_CODE = params(:notificationCode)
@@ -95,4 +117,4 @@ Permitir realizar [consultas de transações](https://pagseguro.uol.com.br/v2/gu
 
 ## Sobre
 
-Desenvolvida por [Stefano Diem Benatti](mailto:stefano.diem@gmail.com)
+Desenvolvida por [Stefano Diem Benatti](mailto:stefano@heavenstudio.com.br)

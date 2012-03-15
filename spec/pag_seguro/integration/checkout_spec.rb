@@ -10,7 +10,15 @@ def create_valid_payment
     PagSeguro::Item.new(id: 17, description: "A pipe",    amount: "3.00",  quantity: "89")
   ]
   payment.sender = PagSeguro::Sender.new(name: "Stefano Diem Benatti", email: "stefano@heavenstudio.com.br", phone_ddd: "11", phone_number: "93430994")
-  payment.shipping = PagSeguro::Shipping.new(type: PagSeguro::Shipping::SEDEX, state: "SP", city: "São Paulo", postal_code: "05363000", district: "Jd. PoliPoli", street: "Av. Otacilio Tomanik", number: "775", complement: "apto. 92")
+  payment.shipping = PagSeguro::Shipping.new(
+    type: PagSeguro::Shipping::SEDEX,
+    state: "SP",
+    city: "São Paulo",
+    postal_code: "05363000",
+    district: "Jd. PoliPoli",
+    street: "Av. Otacilio Tomanik",
+    number: "775",
+    complement: "apto. 92")
   payment
 end
 

@@ -100,9 +100,19 @@ describe PagSeguro::Payment do
         @xml = Nokogiri::XML(@payment.checkout_xml)
       end
       
-      it "should have shipping type" do
-        @xml_without_shipping_info.css("checkout shipping type").first.content.to_i.should == PagSeguro::Shipping::UNIDENTIFIED
-        @xml.css("checkout shipping type").first.content.to_i.should == 2
+      it "should not have any shipping info unless shipping is provided" do
+        @xml_without_shipping_info.css("checkout shipping").should be_empty
+        @xml.css("checkout shipping").should_not be_empty
+      end
+      
+      it "should have a default shipping type of UNINDENTIFIED" do
+        @payment.shipping = PagSeguro::Shipping.new
+        xml_with_empty_shipping = Nokogiri::XML(@payment.checkout_xml)
+        xml_with_empty_shipping.css("checkout shipping type").first.content.to_i.should == PagSeguro::Shipping::UNIDENTIFIED
+      end
+      
+      it "should allow to set a different shipping type" do
+        @xml.css("checkout shipping type").first.content.to_i.should == PagSeguro::Shipping::SEDEX
       end
 
       it "should have state" do
@@ -115,7 +125,7 @@ describe PagSeguro::Payment do
         @xml.css("checkout shipping address city").first.content.should == "São Paulo"
       end
 
-      it "should have posta code" do
+      it "should have postal code" do
         @xml_without_shipping_info.css("checkout shipping address postalCode").should be_empty
         @xml.css("checkout shipping address postalCode").first.content.should == "05363000"
       end
