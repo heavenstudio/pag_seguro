@@ -36,14 +36,28 @@ describe PagSeguro::Sender do
       @sender.email = "stefano@heavenstudio.com.br"
       @sender.should be_a_valid_email
     end
-    
+        
     it "should not show invalid e-mail" do
       @sender.email = "nothing"
       @sender.email.should be_nil
     end
     
+    it "should not have a valid name unless name has two distict character sequences" do
+      @sender.name = nil
+      @sender.should_not be_a_valid_name
+      @sender.name = "Joao"
+      @sender.should_not be_a_valid_name
+      @sender.name = "Joao Paulo"
+      @sender.should be_a_valid_name
+    end
+    
+    it "should not show invalid names" do
+      @sender.name = "Joao"
+      @sender.name.should be_nil
+    end
+    
     it "should crop the name if it is too big" do
-      @sender.name = "a" * 50 + "b" * 10
+      @sender.name = "a" * 50 + " b" * 10
       @sender.name.should == "a" * 50
     end
     

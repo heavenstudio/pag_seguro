@@ -18,7 +18,12 @@ module PagSeguro
     end
     
     def name
-      ( @name.present? && @name.size > 50 ) ? @name[0..49] : @name
+      return nil unless valid_name?
+      @name[0..49]
+    end
+    
+    def valid_name?
+      @name =~ /\w+ \w+/
     end
     
     def phone_ddd
@@ -26,7 +31,7 @@ module PagSeguro
     end
     
     def phone_number
-      @phone_number if @phone_number =~/^\d{8}$/
+      @phone_number if @phone_number =~/^\d{8,9}$/
     end
   end
 end
