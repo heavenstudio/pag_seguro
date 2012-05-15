@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require "spec_helper"
 
 describe PagSeguro::Sender do
@@ -48,6 +49,8 @@ describe PagSeguro::Sender do
       @sender.name = "Joao"
       @sender.should_not be_a_valid_name
       @sender.name = "Joao Paulo"
+      @sender.should be_a_valid_name
+      @sender.name = "José Álvez"
       @sender.should be_a_valid_name
     end
     

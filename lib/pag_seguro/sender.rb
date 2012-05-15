@@ -23,7 +23,7 @@ module PagSeguro
     end
     
     def valid_name?
-      @name =~ /\w+ \w+/
+      @name =~ /\S+ \S+/
     end
     
     def phone_ddd
