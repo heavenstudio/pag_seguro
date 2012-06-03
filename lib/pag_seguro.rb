@@ -14,7 +14,9 @@ require "payment"
 require "payment_method"
 require "sender"
 require "shipping"
+require "transaction"
 require "notification"
+require "query"
 
 # Error classes
 require "errors/unauthorized"
