@@ -96,6 +96,28 @@ O código da notificação é enviado pelo PagSeguro através do parâmentro `no
       end
     end
 
+### Consulta de transações
+
+Para realizar uma consulta de transação é preciso obter o código de transação através do redirecionamento de volta para a loja:
+
+  http://lojamodelo.com.br/conclusao.html?transaction_id=E884542-81B3-4419-9A75-BCC6FB495EF1
+
+Nas configurações de sua conta > Integrações > Página de redirecionamento, ative o redirecionamento com o código da transação e defina um nome para o parâmetro (ex: transaction_id):
+
+  https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml
+
+A URL de retorno deve ser configurada no momento de criação do Payment:
+
+  PagSeguro::Payment.new(EMAIL, TOKEN, redirect_url: "http://lojamodelo.com.br/conclusao.html")
+
+A consulta é feita através de um objeto Query, que possui as mesmas características de um objeto Notification:
+
+    query = PagSeguro::Query.new(EMAIL, TOKEN, "E884542-81B3-4419-9A75-BCC6FB495EF1")
+
+    if query.approved?
+      # ...
+    end
+
 ## Validações
 
 Os modelos utilizados nesta gem utilizam as validações do ActiveModel (semelhantes às presentes em ActiveRecord/Rails) e incluem diversas validações, permitindo que se verifique a validade (utilizando object.valid?) dos dados antes de enviá-los ao PagSeguro. A gem não bloqueia o envio das informações caso os dados estejam inválidos, deixando este passo a cargo da sua aplicação, mas levanta erros caso o pag seguro retorne algum erro relativo às informações enviadas.
@@ -111,10 +133,10 @@ Esta gem possui testes extensivos utilizando Rspec. Para rodar os testes, altere
 
 Caso queira contribuir, faça um fork desta gem no [github](https://github.com/heavenstudio/pag_seguro), escreva os testes respectivos ao bug/feature desejados e faça um merge request.
 
-## TODO
-
-Permitir realizar [consultas de transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consultas.html)
-
 ## Sobre
 
 Desenvolvida por [Stefano Diem Benatti](mailto:stefano@heavenstudio.com.br)
+
+## Colaboradores
+
+Rafael Castilho (<http://github.com/castilhor>)
