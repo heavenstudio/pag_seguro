@@ -1,5 +1,3 @@
-require 'transaction'
-
 module PagSeguro
   class Notification < Transaction
   
