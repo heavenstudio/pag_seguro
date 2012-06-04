@@ -11,26 +11,28 @@ Esta gem foi desenvolvida para utilizar Ruby 1.9.2 ou superior, e não têm comp
 Adicione a `gem "pag_seguro"` ao seu Gemfile:
 
     gem 'pag_seguro'
-	
+
 Além disso, é necessário que tenha uma conta no pag seguro, e que habilite as seguintes configurações:
 
-    Em Integrações -> Token de segurança clique em Gerar novo token e guarde esta informação em local seguro
-    Em Integrações -> Pagamentos via API é necessário ativar a opção "Quero receber somente pagamentos via API."
-    Em Integrações -> Notificação de transações é necessário ativar a notificação de transações e definir a url de retorno
-	
+    Em [Integrações -> Token](https://pagseguro.uol.com.br/integracao/token-de-seguranca.jhtml) de segurança clique em Gerar novo token e guarde esta informação em local seguro
+    Em [Integrações -> Pagamentos via API](https://pagseguro.uol.com.br/integracao/pagamentos-via-api.jhtml) é necessário ativar a opção "Quero receber somente pagamentos via API."
+    Em [Integrações -> Notificação de transações](https://pagseguro.uol.com.br/integracao/notificacao-de-transacoes.jhtml) é necessário ativar a notificação de transações e definir a url de retorno
+
 ## Documentação
+
 ### Classes e Atributos
 
 A nomenclatura dos atributos e recursos (classes) esperados pelo PagSeguro foram mantidas porém usando o padrão de nomenclatura do ruby (ao invés do camelcase utilizado pelo pagseguro). Seguem os links das documentações dos atributos no pagseguro:
 
 * [API de pagamentos](https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-pagamentos.html#v2-item-api-de-pagamentos-parametros-api)
 * [API de notificação](https://pagseguro.uol.com.br/v2/guia-de-integracao/api-de-notificacoes.html)
+* [API de transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-codigo.html)
 
 ###  API de Pagamento
 
 Segue um exemplo de uso para criação de um pagamento no PagSeguro:
 
-    payment = PagSeguro::Payment.new(EMAIL, TOKEN)
+    payment = PagSeguro::Payment.new(email, token, id: invoice.id)
     
     payment.items = [
       PagSeguro::Item.new(id: 25, description: "A Bic Pen", amount: "1.50",  quantity: "4", shipping_cost: "1.00",  weight: 10),
@@ -45,7 +47,7 @@ Além dos items presentes no exemplo acima, é possível configurar `payment.sen
 
 Segue um exemplo mais completo do uso da api de pagamentos:
 
-    payment = PagSeguro::Payment.new(EMAIL, TOKEN)
+    payment = PagSeguro::Payment.new(email, token, id: invoice.id)
     
     payment.items = [
       PagSeguro::Item.new(id: 25, description: "A Bic Pen", amount: "1.50",  quantity: "4", shipping_cost: "1.00",  weight: 10),
@@ -71,21 +73,21 @@ Com exceção do atributo response (que é utilizado para armazenar a resposta e
 
 ### API de Notificação
 
-As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na Notificação de transações (vide Instalação). Obs.: Até o momento o PagSeguro não permite configurar uma url dinâmica para envio das notificação ( e apenas permite uma url por conta ), então provavelemente será necessário que crie uma conta diferente no PagSeguro para cada sistema que desenvolver.
+As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na [Notificação de transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-codigo.html). Obs.: Até o momento o PagSeguro não permite configurar uma url dinâmica para envio das notificação ( e apenas permite uma url por conta ), então provavelemente será necessário que crie uma conta diferente no PagSeguro para cada sistema que desenvolver.
 
 O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST. Segue um exemplo de uso da notificação em uma aplicação rails (este exemplo supõe a existência de um `resources :notifications` em suas rotas, e um modelo `Invoice` responsável pelos pagamentos):
 
     class NotificationsController < ApplicationController
       def create
-        EMAIL = "seu_email_cadastrado@nopagseguro.com.br"
-        TOKEN = "SEU_TOKEN_GERADO_NO_PAG_SEGURO"
-        NOTIFICATION_CODE = params(:notificationCode)
+        email = "seu_email_cadastrado@nopagseguro.com.br"
+        token = "SEU_TOKEN_GERADO_NO_PAG_SEGURO"
+        notification_code = params(:notificationCode)
         
-        notification = PagSeguro::Notification.new(EMAIL, TOKEN, NOTIFICATION_CODE)
+        notification = PagSeguro::Notification.new(email, token, notification_code)
         
         if notification.approved?
           # Idealmente faça alguns testes de sanidade, como notification.gross_amount, notification.item_count, etc
-          # notification.id referencia o id do payment, caso tenha sido configurado
+          # notification.id referencia o id do payment/invoice, caso tenha sido configurado
           # transacation_id identifica o código da transação no pag seguro
           Invoice.find(notification.id).approve!(notification.transaction_id)
         end
@@ -96,23 +98,21 @@ O código da notificação é enviado pelo PagSeguro através do parâmentro `no
       end
     end
 
-### Consulta de transações
+Para este exemplo, o url configurada na [Notificação de transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-codigo.html) poderia ser algo como `http://lojamodelo.com.br/notifications`
 
-Para realizar uma consulta de transação é preciso obter o código de transação através do redirecionamento de volta para a loja:
+### Consulta de Transações
 
-  http://lojamodelo.com.br/conclusao.html?transaction_id=E884542-81B3-4419-9A75-BCC6FB495EF1
+Para realizar a consulta de uma transação é preciso obter o código da transação. Este código é enviado nas Notificações de Transações do PagSeguro (de forma assíncrona), através do método `notification.transaction_id` ou de forma síncrona assim que o usuário retorna à loja após ter concluído a compra.
 
-Nas configurações de sua conta > Integrações > Página de redirecionamento, ative o redirecionamento com o código da transação e defina um nome para o parâmetro (ex: transaction_id):
+Para buscar informações da transação de forma síncrona, é necessário que acesse sua conta no PagSeguro, e clique em [Integrações > Página de redirecionamento](https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml) e ative o redirecionamento com o código da transação, definindo o nome do parâmetro que será enviado para sua aplicação (e.g.: http://lojamodelo.com.br/checkout?transaction_id=E884542-81B3-4419-9A75-BCC6FB495EF1 ). O redirecionamento para esta página é executado através de uma requisição GET.
 
-  https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml
+Caso queira utilizar uma URL dinâmica de retorno, é necessário ativar a página de redirecionamento dinâmico em [Integrações > Página de redirecionamento](https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml), e passar o argumento `redirect_url` para o objeto PagSeguro::Payment:
 
-A URL de retorno deve ser configurada no momento de criação do Payment:
+    PagSeguro::Payment.new(email, token, id: invoice.id, redirect_url: "http://lojamodelo.com.br/checkout")
 
-  PagSeguro::Payment.new(EMAIL, TOKEN, redirect_url: "http://lojamodelo.com.br/conclusao.html")
+Você pode consultar as informações da transação através do `PagSeguro::Query`, que possui os mesmos attributos e métodos que `PagSeguro::Notification` para consulta da transação:
 
-A consulta é feita através de um objeto Query, que possui as mesmas características de um objeto Notification:
-
-    query = PagSeguro::Query.new(EMAIL, TOKEN, "E884542-81B3-4419-9A75-BCC6FB495EF1")
+    query = PagSeguro::Query.new(email, token, "E884542-81B3-4419-9A75-BCC6FB495EF1")
 
     if query.approved?
       # ...
@@ -128,6 +128,10 @@ Esta gem possui testes extensivos utilizando Rspec. Para rodar os testes, altere
 
     bundle
     guard
+
+## Todo
+
+Adicionar código para realizar consultas ao [Histórico de Transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-intervalo-de-datas.html)
 
 ## Contribuindo
 

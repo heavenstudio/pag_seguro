@@ -3,13 +3,8 @@
 require 'spec_helper'
 
 describe PagSeguro::Query do
-  before do
-    transaction_xml_mock = File.open( File.expand_path( File.dirname(__FILE__) + '/../fixtures/transaction.xml') )
-    RestClient.stub(:get){ transaction_xml_mock }
-    @query = PagSeguro::Query.new("mail", "token", "trans_code")
-  end
+  before { PagSeguro::Query.any_instance.stub(transaction_data: transaction_data) }
+  let(:transaction){ PagSeguro::Query.new("mail", "token", "trans_code") }
 
-  it "should have an id" do
-    @query.id.should == "REF1234"
-  end
+  it_behaves_like "a transaction"
 end

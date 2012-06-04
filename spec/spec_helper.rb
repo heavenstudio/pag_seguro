@@ -5,11 +5,13 @@ end
 
 require 'yaml'
 require File.dirname(__FILE__) + "/../lib/pag_seguro"
+Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 
 config = YAML.load_file(File.dirname(__FILE__) + "/pag_seguro/integration/config.yml")
 EMAIL = config["email"]
 TOKEN = config["token"]
 NOTIFICATION_CODE = config["notification_code"]
+TRANSACTION_ID = config["transaction_id"]
 
 class HaveAttributeAccessor
   def initialize(attribute)

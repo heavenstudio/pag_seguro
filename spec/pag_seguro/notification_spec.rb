@@ -3,13 +3,8 @@
 require 'spec_helper'
 
 describe PagSeguro::Notification do
-  before do
-    transaction_xml_mock = File.open( File.expand_path( File.dirname(__FILE__) + '/../fixtures/transaction.xml') )
-    RestClient.stub(:get){ transaction_xml_mock }
-    @notification = PagSeguro::Notification.new("mail", "token", "not_code")
-  end
+  before { PagSeguro::Notification.any_instance.stub(transaction_data: transaction_data) }
+  let(:transaction){ PagSeguro::Notification.new("mail", "token", "not_code") }
 
-  it "should have an id" do
-    @notification.id.should == "REF1234"
-  end
+  it_behaves_like "a transaction"
 end
