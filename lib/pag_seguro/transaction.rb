@@ -170,7 +170,7 @@ module PagSeguro
   
     protected
       def transaction_data(transaction_xml)
-        Nokogiri::XML(transaction_xml)
+        transaction_xml.instance_of?(Nokogiri::XML::Element) ? transaction_xml : Nokogiri::XML(transaction_xml)
       end
 
       def parse_item(data, attribute)
