@@ -14,8 +14,8 @@ module PagSeguro
       raise "Needs a token" if token.blank?
 
       # pagseguro ignores timezone and use -03:00 by default
-      initial_date     = options[:initial_date] || (Time.now.utc - 86400 - (3600*3)).strftime("%Y-%m-%dT%H:%M:%S.%L-03:00")
-      final_date       = options[:final_date] || (Time.now.utc - (3600*3)).strftime("%Y-%m-%dT%H:%M:%S.%L-03:00")
+      initial_date     = (options[:initial_date] || (Time.now.utc - 86400 - (3600*3))).strftime("%Y-%m-%dT%H:%M:%S.%L-03:00")
+      final_date       = (options[:final_date] || (Time.now.utc - (3600*3))).strftime("%Y-%m-%dT%H:%M:%S.%L-03:00")
       page             = options[:page] || 1
       max_page_results = options[:max_page_results] || 100
       search_url = "#{Transaction::PAGSEGURO_TRANSACTIONS_URL}?email=#{email}&token=#{token}&initialDate=#{initial_date}&finalDate=#{final_date}&page=#{page}&maxPageResults=#{max_page_results}"
