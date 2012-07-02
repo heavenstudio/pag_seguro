@@ -81,7 +81,7 @@ O código da notificação é enviado pelo PagSeguro através do parâmentro `no
       def create
         email = "seu_email_cadastrado@nopagseguro.com.br"
         token = "SEU_TOKEN_GERADO_NO_PAG_SEGURO"
-        notification_code = params(:notificationCode)
+        notification_code = params[:notificationCode]
         
         notification = PagSeguro::Notification.new(email, token, notification_code)
         
