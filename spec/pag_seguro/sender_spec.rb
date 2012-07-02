@@ -64,6 +64,11 @@ describe PagSeguro::Sender do
       @sender.name.should == "a" * 50
     end
     
+    it "should crop spaces (because double spaces raises errors on pagseguro)" do
+      @sender.name = "Stefano   Benatti"
+      @sender.name.should == "Stefano Benatti"
+    end
+    
     it "should not show invalid phone ddd's" do
       @sender.phone_ddd = "111"
       @sender.phone_ddd.should be_nil

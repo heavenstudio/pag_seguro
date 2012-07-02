@@ -19,11 +19,11 @@ module PagSeguro
     
     def name
       return nil unless valid_name?
-      @name[0..49]
+      @name.gsub(/ +/, " ")[0..49]
     end
     
     def valid_name?
-      @name =~ /\S+ \S+/
+      @name =~ /\S+ +\S+/
     end
     
     def phone_ddd
