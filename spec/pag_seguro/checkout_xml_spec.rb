@@ -3,7 +3,7 @@ require 'spec_helper'
 
 items = [
   PagSeguro::Item.new(id: 25, description: "A Bic Pen", amount: "1.50",  quantity: "4", shipping_cost: "1.00",  weight: 10),
-  PagSeguro::Item.new(id: 73, description: "A Book",    amount: "38.23", quantity: "1", shipping_cost: "12.00", weight: 300),
+  PagSeguro::Item.new(id: 73, description: "A Book & Cover",    amount: "38.23", quantity: "1", shipping_cost: "12.00", weight: 300),
   PagSeguro::Item.new(id: 95, description: "A Towel",   amount: "69.35", quantity: "2", weight: 400),
   PagSeguro::Item.new(id: 17, description: "A pipe",    amount: "3.00",  quantity: "89")
 ]
@@ -44,8 +44,12 @@ describe PagSeguro::Payment do
         @xml.css("checkout items item id").map(&:content).should == ["25","73","95","17"]
       end
       
-      it "should show all descriptions" do
-        @xml.css("checkout items item description").map(&:content).should == ["A Bic Pen","A Book","A Towel","A pipe"]
+      it "should show all descriptions escaping html" do
+        @xml.css("checkout items item description").map(&:content).should == ["A Bic Pen","A Book & Cover","A Towel","A pipe"]
+      end
+      
+      it "should escape html in item description" do
+        @payment.checkout_xml.should include("A Book &amp; Cover")
       end
       
       it "should show all amounts" do
