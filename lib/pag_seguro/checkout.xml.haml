@@ -17,7 +17,7 @@
     - items.each do |item|
       %item
         %id= item.id
-        %description= item.description
+        %description&= item.description
         %amount= item.amount
         %quantity= item.quantity
         - if item.shipping_cost.present?
