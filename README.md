@@ -144,3 +144,4 @@ Desenvolvida por [Stefano Diem Benatti](mailto:stefano@heavenstudio.com.br)
 ## Colaboradores
 
 Rafael Castilho (<http://github.com/castilhor>)
+Rafael Ivan Garcia (https://github.com/rafaelivan)
