@@ -1,5 +1,5 @@
 module PagSeguro
-  class Shipping
+  class Shipping  < Tableless
     
     PAC = 1
     SEDEX = 2
