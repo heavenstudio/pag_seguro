@@ -5,8 +5,8 @@ module PagSeguro
     attr_accessor :id, :email, :token, :items, :sender, :shipping, :extra_amount, :redirect_url, :max_uses, :max_age, :response
     
     validates_presence_of :email, :token
-    validates_format_of :extra_amount, with: /^\d+\.\d{2}$/, message: " must be a decimal and have 2 digits after the dot", allow_blank: true
-    validates_format_of :redirect_url, with: URI::regexp(%w(http https)), message: " must give a correct url for redirection", allow_blank: true
+    validates_format_of :extra_amount, :with => /^\d+\.\d{2}$/, :message => " must be a decimal and have 2 digits after the dot", :allow_blank => true
+    validates_format_of :redirect_url, :with => URI::regexp(%w(http https)), :message => " must give a correct url for redirection", :allow_blank => true
     validate :max_uses_number, :max_age_number
     
     def initialize(email = nil, token = nil, options = {})
@@ -28,7 +28,7 @@ module PagSeguro
     
     def checkout_xml
       xml_content = File.open( File.dirname(__FILE__) + "/checkout.xml.haml" ).read
-      Haml::Engine.new(xml_content).render(nil, items: @items, payment: self, sender: @sender, shipping: @shipping)
+      Haml::Engine.new(xml_content).render(nil, :items => @items, :payment => self, :sender => @sender, :shipping => @shipping)
     end
     
     def checkout_url_with_params
@@ -63,7 +63,7 @@ module PagSeguro
       end
             
       def send_checkout
-        RestClient.post(checkout_url_with_params, checkout_xml, content_type: "application/xml"){|resp, request, result| resp }
+        RestClient.post(checkout_url_with_params, checkout_xml, :content_type => "application/xml"){|resp, request, result| resp }
       end
       
       def parse_checkout_response
@@ -80,7 +80,7 @@ module PagSeguro
       end
       
       def parse_date
-        DateTime.iso8601( Nokogiri::XML(@response.body).css("checkout date").first.content )
+        DateTime.parse( Nokogiri::XML(@response.body).css("checkout date").first.content )
       end
       
       def parse_code

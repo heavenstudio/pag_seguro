@@ -64,17 +64,17 @@ module PagSeguro
     end
     
     def date
-      DateTime.iso8601( @data.css("date").first.content )
+      DateTime.parse( @data.css("date").first.content )
     end
   
     def items
       @data.css("items item").map do |i|
-        Item.new(id: parse_item(i, "id"), description: parse_item(i, "description"), quantity: parse_item(i, "quantity"), amount: parse_item(i, "amount"))
+        Item.new(:id => parse_item(i, "id"), :description => parse_item(i, "description"), :quantity => parse_item(i, "quantity"), :amount => parse_item(i, "amount"))
       end
     end
     
     def payment_method
-      pm = PaymentMethod.new(code: parse_css("paymentMethod code"), type: parse_css("paymentMethod type"))
+      pm = PaymentMethod.new(:code => parse_css("paymentMethod code"), :type => parse_css("paymentMethod type"))
     end
     
     def sender

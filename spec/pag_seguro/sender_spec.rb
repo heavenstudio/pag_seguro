@@ -22,7 +22,7 @@ describe PagSeguro::Sender do
     end
     
     it "should be able to initialize with all attributes" do
-      sender = PagSeguro::Sender.new(name: "Stefano Diem Benatti", email: "stefano@heavenstudio.com.br", phone_ddd: "11", phone_number: "93430994")
+      sender = PagSeguro::Sender.new(:name => "Stefano Diem Benatti", :email => "stefano@heavenstudio.com.br", :phone_ddd => "11", :phone_number => "93430994")
       sender.name.should == "Stefano Diem Benatti"
       sender.email.should == "stefano@heavenstudio.com.br"
       sender.phone_ddd.should == "11"

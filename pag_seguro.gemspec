@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.email       = ["stefano.diem@gmail.com"]
   s.homepage    = "http://github.com/heavenstudio/pag_seguro"
   s.summary     = %q{A ruby gem to handle PagSeguro's API version 2}
-  s.required_ruby_version = '>= 1.9.2'
+  s.required_ruby_version = '>= 1.8.7'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")

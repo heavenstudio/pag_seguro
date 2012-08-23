@@ -2,14 +2,14 @@
 require "spec_helper"
 
 valid_attributes = {
-  type: PagSeguro::Shipping::SEDEX,
-  state: "SP",
-  city: "São Paulo",
-  postal_code: "05363000",
-  district: "Jd. PoliPoli",
-  street: "Av. Otacilio Tomanik",
-  number: "775",
-  complement: "apto. 92"
+  :type => PagSeguro::Shipping::SEDEX,
+  :state => "SP",
+  :city => "São Paulo",
+  :postal_code => "05363000",
+  :district => "Jd. PoliPoli",
+  :street => "Av. Otacilio Tomanik",
+  :number => "775",
+  :complement => "apto. 92"
 }
 
 describe PagSeguro::Shipping do
@@ -48,6 +48,6 @@ describe PagSeguro::Shipping do
   
   it "should not show postal code unless valid" do
     PagSeguro::Shipping.new(valid_attributes).postal_code.should == "05363000"
-    PagSeguro::Shipping.new(valid_attributes.merge(postal_code: 1234567)).postal_code.should be_blank
+    PagSeguro::Shipping.new(valid_attributes.merge(:postal_code => 1234567)).postal_code.should be_blank
   end
 end

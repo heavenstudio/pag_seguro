@@ -5,6 +5,6 @@ gemspec
 
 # test gems
 gem 'rspec'
-gem 'simplecov', require: false
+gem 'simplecov', :require => false
 gem 'guard-rspec'
 gem 'growl'

@@ -11,7 +11,7 @@ describe PagSeguro::PaymentMethod do
 	  end
     
     it "should be able to initialize with all attributes" do
-      payment_method = PagSeguro::PaymentMethod.new(code: "101", type: "1")
+      payment_method = PagSeguro::PaymentMethod.new(:code => "101", :type => "1")
       payment_method.code.should == 101
       payment_method.type.should == 1
     end
@@ -47,7 +47,7 @@ describe PagSeguro::PaymentMethod do
     
     describe "codes" do
       def should_have_meaning_for_code(meaning, code)
-        PagSeguro::PaymentMethod.new(code: code).name.should == meaning
+        PagSeguro::PaymentMethod.new(:code => code).name.should == meaning
       end
       
       it { should_have_meaning_for_code("Cartão de crédito Visa", 101) }

@@ -1,12 +1,12 @@
 require "spec_helper"
 
 valid_attributes = {
-  id: 1,
-  description: "descrevendo um item",
-  amount: "100.50",
-  quantity: 1,
-  shipping_cost: "10.50",
-  weight: 300
+  :id => 1,
+  :description => "descrevendo um item",
+  :amount => "100.50",
+  :quantity => 1,
+  :shipping_cost => "10.50",
+  :weight => 300
 }
 
 describe PagSeguro::Item do
@@ -47,10 +47,10 @@ describe PagSeguro::Item do
     end
 
     it "should not allow invalid amount formats" do
-      PagSeguro::Item.new(valid_attributes.merge(amount: "10")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(amount: "10,50")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(amount: "R$ 10.50")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(amount: "-10.50")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:amount => "10")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:amount => "10,50")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:amount => "R$ 10.50")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:amount => "-10.50")).should_not be_valid
     end
 
     it "should not be valid without a quantity" do
@@ -58,22 +58,22 @@ describe PagSeguro::Item do
     end
 
     it "should not allow invalid quantities" do
-      PagSeguro::Item.new(valid_attributes.merge(quantity: "1000")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(quantity: "0")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(quantity: "-1")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:quantity => "1000")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:quantity => "0")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:quantity => "-1")).should_not be_valid
     end
 
     it "should not allow invalid shipping_cost formats" do
-      PagSeguro::Item.new(valid_attributes.merge(shipping_cost: "10")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(shipping_cost: "10,50")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(shipping_cost: "R$ 10.50")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(shipping_cost: "-10.50")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:shipping_cost => "10")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:shipping_cost => "10,50")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:shipping_cost => "R$ 10.50")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:shipping_cost => "-10.50")).should_not be_valid
     end
     
     it "should not allow non integer values for weight" do
-      PagSeguro::Item.new(valid_attributes.merge(weight: "-10")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(weight: "10.5")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(weight: "10,5")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:weight => "-10")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:weight => "10.5")).should_not be_valid
+      PagSeguro::Item.new(valid_attributes.merge(:weight => "10,5")).should_not be_valid
     end
   end
 end

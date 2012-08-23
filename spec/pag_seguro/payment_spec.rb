@@ -27,7 +27,7 @@ describe PagSeguro::Payment do
       
       it "should have a DateTime object as date" do
         response = double("response")
-        response.stub(body: "<checkout><date>2001-02-03T04:05:06+07:00</date></checkout>")
+        response.stub(:body => "<checkout><date>2001-02-03T04:05:06+07:00</date></checkout>")
         @payment.instance_variable_set(:"@response", response)
         date = @payment.send(:parse_date)
         date.should be_an_instance_of(DateTime)

@@ -5,9 +5,9 @@ module PagSeguro
     attr_accessor :id, :description, :amount, :quantity, :shipping_cost, :weight
         
     validates_presence_of :id, :description, :amount, :quantity
-    validates_format_of :amount, with: /^\d+\.\d{2}$/, message: " must be a decimal and have 2 digits after the dot"
-    validates_format_of :shipping_cost, with: /^\d+\.\d{2}$/, message: " must be a decimal and have 2 digits after the dot"
-    validates_format_of :weight, with: /^\d+$/, message: " must be an integer"
+    validates_format_of :amount, :with => /^\d+\.\d{2}$/, :message => " must be a decimal and have 2 digits after the dot"
+    validates_format_of :shipping_cost, :with => /^\d+\.\d{2}$/, :message => " must be a decimal and have 2 digits after the dot"
+    validates_format_of :weight, :with => /^\d+$/, :message => " must be an integer"
     validate :quantity_amount
     
     def initialize(attributes = {})

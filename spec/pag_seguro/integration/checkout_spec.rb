@@ -4,21 +4,21 @@ require 'spec_helper'
 def create_valid_payment
   payment = PagSeguro::Payment.new(EMAIL, TOKEN)
   payment.items = [
-    PagSeguro::Item.new(id: 25, description: "A Bic Pen", amount: "1.50",  quantity: "4", shipping_cost: "1.00",  weight: 10),
-    PagSeguro::Item.new(id: 73, description: "A Book",    amount: "38.23", quantity: "1", shipping_cost: "12.00", weight: 300),
-    PagSeguro::Item.new(id: 95, description: "A Towel",   amount: "69.35", quantity: "2", weight: 400),
-    PagSeguro::Item.new(id: 17, description: "A pipe",    amount: "3.00",  quantity: "89")
+    PagSeguro::Item.new(:id => 25, :description => "A Bic Pen", :amount => "1.50",  :quantity => "4", :shipping_cost => "1.00",  :weight => 10),
+    PagSeguro::Item.new(:id => 73, :description => "A Book",    :amount => "38.23", :quantity => "1", :shipping_cost => "12.00", :weight => 300),
+    PagSeguro::Item.new(:id => 95, :description => "A Towel",   :amount => "69.35", :quantity => "2", :weight => 400),
+    PagSeguro::Item.new(:id => 17, :description => "A pipe",    :amount => "3.00",  :quantity => "89")
   ]
-  payment.sender = PagSeguro::Sender.new(name: "María Isabel   Andrade ", email: "stefano@heavenstudio.com.br", phone_ddd: "11", phone_number: "93430994")
+  payment.sender = PagSeguro::Sender.new(:name => "María Isabel   Andrade ", :email => "stefano@heavenstudio.com.br", :phone_ddd => "11", :phone_number => "93430994")
   payment.shipping = PagSeguro::Shipping.new(
-    type: PagSeguro::Shipping::SEDEX,
-    state: "SP",
-    city: "São Paulo",
-    postal_code: "05363000",
-    district: "Jd. PoliPoli",
-    street: "Av. Otacilio Tomanik",
-    number: "775",
-    complement: "apto. 92")
+    :type => PagSeguro::Shipping::SEDEX,
+    :state => "SP",
+    :city => "São Paulo",
+    :postal_code => "05363000",
+    :district => "Jd. PoliPoli",
+    :street => "Av. Otacilio Tomanik",
+    :number => "775",
+    :complement => "apto. 92")
   payment
 end
 
@@ -39,7 +39,7 @@ describe PagSeguro::Payment do
   
     it "should be valid even without a sender and shipping information" do
       payment = PagSeguro::Payment.new(EMAIL, TOKEN)
-      payment.items = [PagSeguro::Item.new(id: 17, description: "A pipe", amount: "3.00",  quantity: "2")]
+      payment.items = [PagSeguro::Item.new(:id => 17, :description => "A pipe", :amount => "3.00",  :quantity => "2")]
       payment.code.size.should == 32
     end
     

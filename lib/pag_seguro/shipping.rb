@@ -6,7 +6,7 @@ module PagSeguro
     SEDEX = 2
     UNIDENTIFIED = 3
     
-    validates_format_of :postal_code, with: /^\d{8}$/, message: " must be an integer with 8 digits", allow_blank: true
+    validates_format_of :postal_code, :with => /^\d{8}$/, :message => " must be an integer with 8 digits", :allow_blank => true
     
     attr_accessor :type, :state, :city, :postal_code, :district, :street, :number, :complement, :cost
     
