@@ -1,6 +1,5 @@
 module PagSeguro
-  class Payment
-    include ActiveModel::Validations
+  class Payment < Tableless
         
     attr_accessor :id, :email, :token, :items, :sender, :shipping, :extra_amount, :redirect_url, :max_uses, :max_age, :response
     

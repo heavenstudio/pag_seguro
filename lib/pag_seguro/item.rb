@@ -1,7 +1,5 @@
 module PagSeguro
-  class Item
-    include ActiveModel::Validations
-    
+  class Item < Tableless
     attr_accessor :id, :description, :amount, :quantity, :shipping_cost, :weight
         
     validates_presence_of :id, :description, :amount, :quantity

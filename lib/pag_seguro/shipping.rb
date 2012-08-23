@@ -1,6 +1,5 @@
 module PagSeguro
   class Shipping
-    include ActiveModel::Validations
     
     PAC = 1
     SEDEX = 2
