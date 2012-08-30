@@ -23,6 +23,18 @@ module PagSeguro
     PAGSEGURO_CHARGE            = 4
     PAGSEGURO_BONUS             = 5
   
+    def self.status_for(status_code)
+      case status_code
+      when PAGSEGURO_PROCESSING  then :processing
+      when PAGSEGURO_IN_ANALYSIS then :in_analysis
+      when PAGSEGURO_APPROVED    then :approved
+      when PAGSEGURO_AVAILABLE   then :available
+      when PAGSEGURO_DISPUTED    then :disputed
+      when PAGSEGURO_RETURNED    then :returned
+      when PAGSEGURO_CANCELLED   then :cancelled
+      end
+    end
+
     def initialize(transaction_xml)
       @data = transaction_data(transaction_xml)
     end
@@ -44,15 +56,15 @@ module PagSeguro
     end
 
     def net_amount
-      @data.css("feeAmount").first.content
+      @data.css("netAmount").first.content
     end
 
     def extra_amount
-      @data.css("feeAmount").first.content
+      @data.css("extraAmount").first.content
     end
 
     def installment_count
-      @data.css("itemCount").first.content.to_i
+      @data.css("installmentCount").first.content.to_i
     end
     
     def item_count

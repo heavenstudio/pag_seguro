@@ -177,4 +177,34 @@ shared_examples_for "a transaction" do
       transaction.should be_bonus
     end
   end
+
+  describe "::status_for" do
+    it "should return :processing when 1" do
+      subject.status_for(1).should == :processing
+    end
+
+    it "should return :in_analysis when 2" do
+      subject.status_for(2).should == :in_analysis
+    end
+
+    it "should return :approved when 3" do
+      subject.status_for(3).should == :approved
+    end
+
+    it "should return :available when 4" do
+      subject.status_for(4).should == :available
+    end
+
+    it "should return :disputed when 5" do
+      subject.status_for(5).should == :disputed
+    end
+
+    it "should return :returned when 6" do
+      subject.status_for(6).should == :returned
+    end
+
+    it "should return :cancelled when 7" do
+      subject.status_for(7).should == :cancelled
+    end
+  end
 end
