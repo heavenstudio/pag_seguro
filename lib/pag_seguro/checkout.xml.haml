@@ -43,6 +43,8 @@
         %type= shipping.type
       - else
         %type 3
+      - if shipping.cost.present?
+        %cost= shipping.cost
       %address
         %country BRA
         - if shipping.state.present?

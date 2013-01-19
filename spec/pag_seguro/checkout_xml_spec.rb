@@ -11,7 +11,7 @@ items = [
 sender_info = {name: "Stefano Diem Benatti", email: "stefano@heavenstudio.com.br", phone_ddd: "11", phone_number: "93430994"}
 
 shipping_info = {type: PagSeguro::Shipping::SEDEX, state: "SP", city: "São Paulo", postal_code: "05363000",
-  district: "Jd. PoliPoli", street: "Av. Otacilio Tomanik", number: "775", complement: "apto. 92"}
+  district: "Jd. PoliPoli", street: "Av. Otacilio Tomanik", number: "775", complement: "apto. 92", cost: "12.13" }
 
 
 describe PagSeguro::Payment do
@@ -117,6 +117,10 @@ describe PagSeguro::Payment do
       
       it "should allow to set a different shipping type" do
         @xml.css("checkout shipping type").first.content.to_i.should == PagSeguro::Shipping::SEDEX
+      end
+
+      it "should allow to set a shipping cost" do
+        @xml.css("checkout shipping cost").first.content.should == "12.13"
       end
 
       it "should have state" do
