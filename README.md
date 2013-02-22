@@ -78,7 +78,11 @@ As notificações de alteração no status da compra no PagSeguro serão enviada
 O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST. Segue um exemplo de uso da notificação em uma aplicação rails (este exemplo supõe a existência de um `resources :notifications` em suas rotas, e um modelo `Invoice` responsável pelos pagamentos):
 
     class NotificationsController < ApplicationController
+      skip_before_filter :verify_authenticity_token
+    
       def create
+        return unless request.post?
+      
         email = "seu_email_cadastrado@nopagseguro.com.br"
         token = "SEU_TOKEN_GERADO_NO_PAG_SEGURO"
         notification_code = params[:notificationCode]
@@ -95,6 +99,8 @@ O código da notificação é enviado pelo PagSeguro através do parâmentro `no
         if notification.cancelled? || notification.returned?
           Invoice.find(notification.id).void!
         end
+        
+        render :nothing => true
       end
     end
 
