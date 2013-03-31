@@ -8,7 +8,7 @@
     %redirectURL= payment.redirect_url
   - if payment.max_uses.present?
     %maxUses= payment.max_uses
-  - if payment. max_age.present?
+  - if payment.max_age.present?
     %maxAge= payment.max_age
 
   %currency BRL
@@ -61,3 +61,14 @@
           %number= shipping.number
         - if shipping.complement.present?
           %complement= shipping.complement
+  %preApproval
+    %name Super seguro para notebook
+    %details Toda segunda feira será cobrado o valor de R$150,00 para o seguro do notebook
+    %amountPerPayment 150.00
+    %period WEEKLY
+    %dayOfWeek MONDAY
+    %initialDate 2015-01-17T19:20:30.45-03:00
+    %finalDate 2017-01-17T19:20:30.45-03:00
+    %maxAmountPerPeriod 200.00
+    %maxTotalAmount 900.00
+    %reviewURL http://sounoob.com.br/produto1

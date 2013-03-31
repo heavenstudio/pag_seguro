@@ -65,29 +65,4 @@ describe PagSeguro::Payment do
       payment.date.should be_an_instance_of(DateTime)
     end
   end
-
-  describe "#parse_checkout_response" do
-    before do
-      @payment = create_valid_payment
-      @payment.stub(:parse_code)
-      @payment.stub(:parse_date)
-      @payment.stub(:parse_checkout_response){ "some response" }
-    end
-  
-    it "should not make a request to pagseguro more than once" do
-      @payment.should_receive(:parse_checkout_response).exactly(1).times
-    
-      @payment.code
-      @payment.code
-      @payment.date
-    end
-  
-    it "should make more than one request to pag seguro if the payment is reset" do
-      @payment.should_receive(:parse_checkout_response).exactly(2).times
-
-      @payment.code
-      @payment.reset!
-      @payment.date
-    end
-  end
 end

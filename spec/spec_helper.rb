@@ -6,6 +6,7 @@ end
 require 'yaml'
 require File.dirname(__FILE__) + "/../lib/pag_seguro"
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
+require 'shoulda-matchers'
 
 config = YAML.load_file(File.dirname(__FILE__) + "/pag_seguro/integration/config.yml")
 EMAIL = config["email"]

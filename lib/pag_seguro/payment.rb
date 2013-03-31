@@ -40,12 +40,12 @@ module PagSeguro
     end
     
     def code
-      @response ||= parse_checkout_response
+      response || parse_checkout_response
       parse_code
     end
     
     def date
-      @response ||= parse_checkout_response
+      response || parse_checkout_response
       parse_date
     end
     
@@ -67,24 +67,19 @@ module PagSeguro
       end
       
       def parse_checkout_response
-        response = send_checkout
-        if response.code == 200
-          response.body
-        elsif response.code == 401
-          raise Errors::Unauthorized
-        elsif response.code == 400
-          raise Errors::InvalidData.new(response.body)
-        else
-          raise Errors::UnknownError.new(response)
-        end
+        res = send_checkout
+        raise Errors::Unauthorized if res.code == 401
+        raise Errors::InvalidData.new(res.body) if res.code == 400
+        raise Errors::UnknownError.new(res) if res.code != 200
+        @response = res.body
       end
       
       def parse_date
-        DateTime.iso8601( Nokogiri::XML(@response.body).css("checkout date").first.content )
+        DateTime.iso8601( Nokogiri::XML(response.body).css("checkout date").first.content )
       end
       
       def parse_code
-        Nokogiri::XML(@response.body).css("checkout code").first.content
+        Nokogiri::XML(response.body).css("checkout code").first.content
       end
   end
 end

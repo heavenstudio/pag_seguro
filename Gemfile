@@ -7,4 +7,5 @@ gemspec
 gem 'rspec'
 gem 'simplecov', require: false
 gem 'guard-rspec'
+gem 'shoulda-matchers'
 gem 'growl'

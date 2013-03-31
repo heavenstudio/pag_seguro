@@ -10,70 +10,45 @@ valid_attributes = {
 }
 
 describe PagSeguro::Item do
-  context "instance" do
-    before { @item = PagSeguro::Item.new }
+  it { should have_attribute_accessor(:id) }
+  it { should have_attribute_accessor(:description) }
+  it { should have_attribute_accessor(:amount) }
+  it { should have_attribute_accessor(:quantity) }
+  it { should have_attribute_accessor(:shipping_cost) }
+  it { should have_attribute_accessor(:weight) }
 
-    it { @item.should have_attribute_accessor(:id) }
-    it { @item.should have_attribute_accessor(:description) }
-    it { @item.should have_attribute_accessor(:amount) }
-    it { @item.should have_attribute_accessor(:quantity) }
-    it { @item.should have_attribute_accessor(:shipping_cost) }
-    it { @item.should have_attribute_accessor(:weight) }
+  it "should be valid with valid attributes" do
+    PagSeguro::Item.new(valid_attributes).should be_valid
+  end
 
-    it "should be valid with valid attributes" do
-      PagSeguro::Item.new(valid_attributes).should be_valid
-    end
+  it { should validate_presence_of :id }
+  it { should validate_presence_of :description }
+  it { should validate_presence_of :amount }
+  it { should validate_presence_of :quantity }
 
-    it "should not be valid without an id" do
-      PagSeguro::Item.new(valid_attributes.except(:id)).should_not be_valid
-    end
+  it { should_not allow_value("10").for(:amount) }
+  it { should_not allow_value("10,50").for(:amount) }
+  it { should_not allow_value("R$ 10.50").for(:amount) }
+  it { should_not allow_value("-10.50").for(:amount) }
+  it { should allow_value("10.50").for(:amount) }
 
-    it "should not be valid without a description" do
-      PagSeguro::Item.new(valid_attributes.except(:description)).should_not be_valid
-    end
+  it { should_not allow_value("10").for(:shipping_cost) }
+  it { should_not allow_value("10,50").for(:shipping_cost) }
+  it { should_not allow_value("R$ 10.50").for(:shipping_cost) }
+  it { should_not allow_value("-10.50").for(:shipping_cost) }
+  it { should allow_value("10.50").for(:shipping_cost) }
 
-    it "should trim description to 100 characters if it has more than 100 characters" do
-      item = PagSeguro::Item.new(valid_attributes)
-      item.description = "-" * 100
-      item.description.size.should == 100
-      item.should be_valid
-      item.description = "-" * 101
-      item.description.size.should == 100
-      item.should be_valid
-    end
-
-    it "should not be valid without an amount" do
-      PagSeguro::Item.new(valid_attributes.except(:amount)).should_not be_valid
-    end
-
-    it "should not allow invalid amount formats" do
-      PagSeguro::Item.new(valid_attributes.merge(amount: "10")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(amount: "10,50")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(amount: "R$ 10.50")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(amount: "-10.50")).should_not be_valid
-    end
-
-    it "should not be valid without a quantity" do
-      PagSeguro::Item.new(valid_attributes.except(:quantity)).should_not be_valid
-    end
-
-    it "should not allow invalid quantities" do
-      PagSeguro::Item.new(valid_attributes.merge(quantity: "1000")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(quantity: "0")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(quantity: "-1")).should_not be_valid
-    end
-
-    it "should not allow invalid shipping_cost formats" do
-      PagSeguro::Item.new(valid_attributes.merge(shipping_cost: "10")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(shipping_cost: "10,50")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(shipping_cost: "R$ 10.50")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(shipping_cost: "-10.50")).should_not be_valid
-    end
+  it { should_not allow_value("1000").for(:quantity) }
+  it { should_not allow_value("0").for(:quantity) }
+  it { should_not allow_value("-1").for(:quantity) }
+  it { should allow_value("1").for(:quantity) }
     
-    it "should not allow non integer values for weight" do
-      PagSeguro::Item.new(valid_attributes.merge(weight: "-10")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(weight: "10.5")).should_not be_valid
-      PagSeguro::Item.new(valid_attributes.merge(weight: "10,5")).should_not be_valid
-    end
+  it { should_not allow_value("-10").for(:weight) }
+  it { should_not allow_value("10.5").for(:weight) }
+  it { should_not allow_value("10,5").for(:weight) }
+  it { should allow_value("3").for(:weight) }
+
+  it "should trim description to 100 characters if it has more than 100 characters" do
+    PagSeguro::Item.new(description: "-" * 101).description.size.should == 100
   end
 end

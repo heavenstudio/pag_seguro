@@ -1,103 +1,70 @@
 require 'spec_helper'
 
 describe PagSeguro::Payment do
-  context "instance" do
-    context "accessors" do
-      before { @payment = PagSeguro::Payment.new }
-      
-      it { @payment.should have_attribute_accessor(:id) }
-      it { @payment.should have_attribute_accessor(:items) }
-      it { @payment.should have_attribute_accessor(:sender) }
-      it { @payment.should have_attribute_accessor(:shipping) }
-      it { @payment.should have_attribute_accessor(:email) }
-      it { @payment.should have_attribute_accessor(:token) }
-      it { @payment.should have_attribute_accessor(:extra_amount) }
-      it { @payment.should have_attribute_accessor(:redirect_url) }
-      it { @payment.should have_attribute_accessor(:max_uses) }
-      it { @payment.should have_attribute_accessor(:max_age) }
-      it { @payment.should have_attribute_accessor(:response) }
+  let(:payment){ PagSeguro::Payment.new }
+  subject{ payment }
 
-      it "should respond to :code" do
-        @payment.respond_to?(:code).should be_true
-      end
+  it { should have_attribute_accessor(:id) }
+  it { should have_attribute_accessor(:items) }
+  it { should have_attribute_accessor(:sender) }
+  it { should have_attribute_accessor(:shipping) }
+  it { should have_attribute_accessor(:email) }
+  it { should have_attribute_accessor(:token) }
+  it { should have_attribute_accessor(:extra_amount) }
+  it { should have_attribute_accessor(:redirect_url) }
+  it { should have_attribute_accessor(:max_uses) }
+  it { should have_attribute_accessor(:max_age) }
+  it { should have_attribute_accessor(:response) }
 
-      it "should respond to :date" do
-        @payment.respond_to?(:date).should be_true
-      end
-      
-      it "should have a DateTime object as date" do
-        response = double("response")
-        response.stub(body: "<checkout><date>2001-02-03T04:05:06+07:00</date></checkout>")
-        @payment.instance_variable_set(:"@response", response)
-        date = @payment.send(:parse_date)
-        date.should be_an_instance_of(DateTime)
-        date.year.should == 2001
-        date.month.should == 2
-        date.day.should == 3
-      end
+  it { should respond_to :code }
+  it { should respond_to :date }
 
-      it "should have items" do
-        @payment.items.should be_instance_of(Array)
-        @payment.items.should be_empty
-      end
+  describe "#date" do
+    subject{ payment.send(:parse_date) }
+    before{ payment.stub response: double(:response, body: "<checkout><date>2001-02-03T04:05:06+07:00</date></checkout>") }
 
-      it "should have a sender" do
-        @payment.sender.should be_instance_of(PagSeguro::Sender)
-      end
-    end
-        
-    it "should allow to set email and token initialization" do
-      payment = PagSeguro::Payment.new("mymail", "mytoken")
-      payment.email.should == "mymail"
-      payment.token.should == "mytoken"
-    end
+    it { should be_an_instance_of(DateTime) }
+    its(:year){ should == 2001 }
+    its(:month){ should == 2 }
+    its(:day){ should == 3 }
+  end
+
+  describe "#code" do
+    before{ payment.stub response: double(:response, body: "<checkout><code>EE603A-59F0DEF0DAAD-2334FFBF9A1E-3223E3</code></checkout>") }
+
+    its(:code){ should == "EE603A-59F0DEF0DAAD-2334FFBF9A1E-3223E3" }
+  end
+
+  its(:items){ should be_an_instance_of(Array) }
+  its(:items){ should be_empty }
+  its(:sender){ should be_an_instance_of(PagSeguro::Sender) }
+
+  context "with email and token initialization" do
+    subject{ PagSeguro::Payment.new("mymail", "mytoken") }
+    let(:payment){ subject }
+    its(:email){ should == "mymail" }
+    its(:token){ should == "mytoken" }
+
+    it{ should be_valid }
+
+    it { validate_presence_of :email }
+    it { validate_presence_of :token }
     
-    context "validation" do
-      before { @payment = PagSeguro::Payment.new("mymail", "mytoken") }
-      it "should be valid with valid attributes" do
-        @payment.should be_valid
-      end
-      
-      it "should not be valid without email" do
-        @payment.email = nil
-        @payment.should_not be_valid
-      end
+    it { should_not allow_value("10,50").for(:extra_amount) }
+    it { should_not allow_value("R$ 10.50").for(:extra_amount) }
+    it { should_not allow_value("R$ 10,50").for(:extra_amount) }
+    it { should allow_value("10.50").for(:extra_amount) }
+        
+    it { should_not allow_value("something.com.br").for(:redirect_url)}
+    it { should allow_value("http://something.com.br").for(:redirect_url)}
 
-      it "should not be valid without token" do
-        @payment.token = nil
-        @payment.should_not be_valid
-      end
-      
-      it "should not be valid with invalid extra amount format" do
-        @payment.extra_amount = "10,50"
-        @payment.should_not be_valid
-        @payment.extra_amount = "R$ 10.50"
-        @payment.should_not be_valid
-        @payment.extra_amount = "10.50"
-        @payment.should be_valid
-      end
-      
-      it "should not allow invalid urls" do
-        @payment.redirect_url = "httd://something"
-        @payment.should_not be_valid
-        @payment.redirect_url = "http://heavenstudio.com.br"
-        @payment.should be_valid
-      end
-      
-      it "should not allow an invalid number of uses" do
-        @payment.max_uses = "0"
-        @payment.should_not be_valid
-        @payment.max_uses = "10"
-        @payment.should be_valid
-      end
-      
-      it "should not allow an invalid second time" do
-        @payment.max_age = "29"
-        @payment.should_not be_valid
-        @payment.max_age = "30"
-        @payment.should be_valid
-      end
-    end
+    it { should_not allow_value(0).for(:max_uses) }
+    it { should_not allow_value("0").for(:max_uses) }
+    it { should allow_value(10).for(:max_uses) }
+    it { should allow_value("10").for(:max_uses) }
+
+    it { should_not allow_value(29).for(:max_age) }
+    it { should allow_value(30).for(:max_age) }
   end
   
   context "checking out" do
@@ -114,42 +81,83 @@ describe PagSeguro::Payment do
       payment.stub(:code).and_return("aabbcc")
       payment.checkout_payment_url.should == "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=aabbcc"
     end
-    
-    describe "parse_checkout_response" do
-      before do
-        @payment = PagSeguro::Payment.new("mymail", "mytoken")
-      end
+  end
 
-      it "should not raise errors if response code is 200" do
-        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 200 }
-        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some body info" }
-        lambda { @payment.send(:parse_checkout_response) }.should_not raise_error
-      end
-      
-      it "should raise PagSeguro::Errors::InvalidData if response code is 400" do
-        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 400 }
-        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some error description" }
-        lambda { @payment.send(:parse_checkout_response) }.should raise_error(PagSeguro::Errors::InvalidData)
-      end
-      
-      it "should raise PagSeguro::Errors::Unauthorized if response code is 400" do
-        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 401 }
-        lambda { @payment.send(:parse_checkout_response) }.should raise_error(PagSeguro::Errors::Unauthorized)
-      end
-            
-      it "should raise PagSeguro::Errors::UnknownError if response code is not 200, 400 or 401" do
-        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 300 }
-        PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some response body" }
-        lambda { @payment.send(:parse_checkout_response) }.should raise_error(PagSeguro::Errors::UnknownError)
-      end
-      
-      it "should be able to reset response" do
-        @payment.response = "something"
-        @payment.response.should be_present
-        @payment.reset!
-        @payment.response.should be_nil
-      end
+  describe "#parse_checkout_response" do
+    let(:payment){ PagSeguro::Payment.new("mymail", "mytoken") }
+
+    it "should not raise errors if response code is 200" do
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 200 }
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some body info" }
+      expect { payment.send(:parse_checkout_response) }.to_not raise_error
     end
     
+    it "should raise PagSeguro::Errors::InvalidData if response code is 400" do
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 400 }
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some error description" }
+      expect { payment.send(:parse_checkout_response) }.to raise_error(PagSeguro::Errors::InvalidData)
+    end
+    
+    it "should raise PagSeguro::Errors::Unauthorized if response code is 400" do
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 401 }
+      expect { payment.send(:parse_checkout_response) }.to raise_error(PagSeguro::Errors::Unauthorized)
+    end
+          
+    it "should raise PagSeguro::Errors::UnknownError if response code is not 200, 400 or 401" do
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 300 }
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some response body" }
+      expect { payment.send(:parse_checkout_response) }.to raise_error(PagSeguro::Errors::UnknownError)
+    end
+
+    it "should set response attribute if code is 200" do
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 200 }
+      PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ "some response body" }
+      expect { payment.send(:parse_checkout_response) }.to change { payment.response }.from(nil).to("some response body")
+    end
+    
+    it "should be able to reset response" do
+      payment.response = "something"
+      expect { payment.reset! }.to change{ payment.response }.from("something").to(nil)
+    end
+  end
+
+  describe "#code" do
+    it "should call #parse_checkout_response if #response is nil" do
+      payment.stub(response: nil, parse_code: nil)
+      payment.should_receive(:parse_checkout_response)
+      payment.code
+    end
+
+    it "should not call #parse_checkout_response if #response is present" do
+      payment.stub(response: true, parse_code: nil)
+      payment.should_not_receive(:parse_checkout_response)
+      payment.code
+    end
+
+    it "should call #parse_code" do
+      payment.stub(response: true)
+      payment.should_receive(:parse_code)
+      payment.code
+    end
+  end
+
+  describe "#date" do
+    it "should call #parse_checkout_response if #response is nil" do
+      payment.stub(response: nil, parse_date: nil)
+      payment.should_receive(:parse_checkout_response)
+      payment.date
+    end
+
+    it "should not call #parse_checkout_response if #response is present" do
+      payment.stub(response: true, parse_date: nil)
+      payment.should_not_receive(:parse_checkout_response)
+      payment.date
+    end
+
+    it "should call #parse_code" do
+      payment.stub(response: true)
+      payment.should_receive(:parse_date)
+      payment.date
+    end
   end
 end
