@@ -31,6 +31,38 @@ describe PagSeguro::PreApproval do
   it { should have_attribute_accessor(:max_total_amount) }
   it { should have_attribute_accessor(:review_URL) }
 
+  it { should validate_presence_of :name }
+  it { should validate_presence_of :period }
+
+  [:weekly, :monthly, :bimonthly, :trimonthly, :semiannually, :yearly].each do |period_type|
+    it { should allow_value(period_type).for(:period) }
+    it { should allow_value(period_type.to_s).for(:period) }
+    it { should allow_value(period_type.to_s.upcase).for(:period) }
+  end
+  it { should_not allow_value(:some_other_period_type).for(:period) }
+
+  it { should allow_value( nil ).for(:initial_date) }
+  it { should_not allow_value( Time.now - 10.minutes ).for(:initial_date) }
+  it { should allow_value( Time.now ).for(:initial_date) }
+  it { should allow_value( (2.years - 5.minutes).from_now ).for(:initial_date) }
+  it { should_not allow_value( 2.years.from_now + 5.minutes ).for(:initial_date) }
+
+  it { should allow_value( nil ).for(:final_date) }
+  it { should_not allow_value( Time.now - 10.minutes ).for(:final_date) }
+  it { should allow_value( Time.now ).for(:final_date) }
+  it { should allow_value( (2.years - 5.minutes).from_now ).for(:final_date) }
+  it { should_not allow_value( 2.years.from_now + 5.minutes ).for(:final_date) }
+
+  context "with an initial date" do
+    subject { PagSeguro::PreApproval.new(initial_date: 5.days.from_now) }
+
+    it { should allow_value( nil ).for(:final_date) }
+    it { should_not allow_value( Time.now - 10.minutes + 5.days ).for(:final_date) }
+    it { should allow_value( Time.now + 5.days ).for(:final_date) }
+    it { should allow_value( (2.years - 5.minutes + 5.days).from_now ).for(:final_date) }
+    it { should_not allow_value( 2.years.from_now + 5.minutes + 5.days ).for(:final_date) }    
+  end
+
   describe "initialized with attributes" do
     subject{ PagSeguro::PreApproval.new(shared_attributes) }
 
@@ -46,22 +78,32 @@ describe PagSeguro::PreApproval do
     context "weekly" do
       subject{ PagSeguro::PreApproval.new(weekly_attributes) }
 
-      its(:period){ should == :weekly }
-      its(:day_of_week){ should == :monday }
+      it { should ensure_inclusion_of(:day_of_week).in_array(%w(monday tuesday wednesday thursday friday saturday sunday)) }
+
+      its(:period){ should == 'weekly' }
+      its(:day_of_week){ should == 'monday' }
     end
 
     context "monthly" do
       subject{ PagSeguro::PreApproval.new(monthly_attributes) }
 
-      its(:period){ should == :monthly }
+      it { should ensure_inclusion_of(:day_of_month).in_range(1..28) }
+
+      its(:period){ should == 'monthly' }
       its(:day_of_month){ should == 3 }
     end
 
     context "yearly" do
       subject{ PagSeguro::PreApproval.new(yearly_attributes) }
 
-      its(:period){ should == :yearly }
-      its(:day_of_year){ should == PagSeguro::DayOfYear.new(day: 1, month: 3) }
+      it { should validate_presence_of(:day_of_year) }
+      it { should allow_value('10-22').for(:day_of_year) }
+      it { should allow_value('01-01').for(:day_of_year) }
+      it { should allow_value(PagSeguro::DayOfYear.new(month: 1, day: 1)).for(:day_of_year) }
+      it { should_not allow_value('1-1').for(:day_of_year) }
+
+      its(:period){ should == 'yearly' }
+      its(:day_of_year){ should == '03-01' }
     end
   end
 end

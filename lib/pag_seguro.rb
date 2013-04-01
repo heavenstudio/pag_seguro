@@ -1,12 +1,16 @@
 $: << File.expand_path(File.dirname(__FILE__) + "/../lib/pag_seguro")
 
-require 'date'
+require "date"
 
 # Third party gems
 require "active_model"
 require "nokogiri"
 require "haml"
 require "rest-client"
+require "active_support"
+require "active_support/time"
+
+require "decimal_validator"
 
 # PagSeguro classes
 require "item"

@@ -1,11 +1,11 @@
 module PagSeguro
   class Payment
     include ActiveModel::Validations
-        
+
     attr_accessor :id, :email, :token, :items, :sender, :shipping, :extra_amount, :redirect_url, :max_uses, :max_age, :response
     
     validates_presence_of :email, :token
-    validates_format_of :extra_amount, with: /^\d+\.\d{2}$/, message: " must be a decimal and have 2 digits after the dot", allow_blank: true
+    validates :extra_amount, decimal: true
     validates_format_of :redirect_url, with: URI::regexp(%w(http https)), message: " must give a correct url for redirection", allow_blank: true
     validate :max_uses_number, :max_age_number
     
