@@ -124,6 +124,54 @@ Você pode consultar as informações da transação através do `PagSeguro::Que
       # ...
     end
 
+### Pagamento Recorrente
+
+**Primeiro de tudo vale ressaltar de que a API de pagamento recorrente não está documentada oficialmente pelo pagseguro, apesar de ter sido lançada em dezembro de 2012. Esta funcionalidade foi criada com base em um post em um [blog](http://sounoob.com.br/requisicao-de-pagamento-do-pagseguro-com-assinatura-associada-usando-php/) e em tentativa e erro. Use por sua conta e risco.**
+
+Através desta gem é possível enviar a requisição de uma pagamento recorrente juntamente com o pedido de compra (e não é possível enviar um pedido de assinatura sem enviar adicionar nenhum ítem ao pagamento). Para usá-la, basta adicionar um pre_approval a um pagamento:
+    
+    # suponho que uma variavel payment (do tipo PagSeguro::Payment) já foi instanciada, e que o payment.items não está vazio
+    payment.pre_approval = PagSeguro::PreApproval.new
+
+    # obrigatório. Recebe uma string (de até 100 caracteres) e representa o nome da sua assinatura
+    payment.pre_approval.name = "nome da minha assinatura"
+
+    # obrigatório. Recebe uma data e representa a data em que sua assinatura termina. Não pode ser maior do que a data de início (ou hoje) em mais de 744 dias (pouco menos de 3 anos)
+    payment.pre_approval.pre_approval.final_date = Date.new(2014, 6, 12)
+
+    # obrigatório. Valor máximo da assinatura por período/cobrança. Recebe uma string (formatada como "%.2f"), um float ou um BigDecimal
+    payment.pre_approval.max_amount_per_period = '200.00'
+
+    # obrigatório. Valor máximo total da assinatura. Recebe uma string (formatada como "%.2f"), um float ou um BigDecimal
+    payment.pre_approval.max_total_amount = '1000.00'
+
+    # obrigatório. Representa a periodicidade da cobraça. Recebe uma string ou símbolo e pode ser: weekly, monthly, bimonthly, trimonthly, semiannually, ou yearly
+    payment.pre_approval.period = :monthly
+
+    # obrigatório no caso de pagamentos de periodicidade monthly, bimonthly ou trimonthly. Recebe um número (dia do mês) de 1 à 28
+    payment.pre_approval.day_of_month = 10
+
+    # obrigatório no caso de pagamentos de periodicidade weekly. Recebe uma string ou símbolo representando o dia na semana, e pode ser monday, tuesday, wednesday, thursday, friday, saturday ou sunday
+    payment.pre_approval.day_of_week = :friday
+
+    # obrigatório no caso de pagamentos de periodicidade yearly. Recebe uma string representando o dia do mês e o mês do ano no formato 'MM-dd'. Para facilitar use a classe DayOfYear que gera a string no formato correto.
+    payment.pre_approval.day_of_year = PagSeguro::DayOfYear.new(day: 10, month: 4)
+
+    # estranhamente é opcional! Valor de cada cobrança. Recebe uma string (no formato "%.2f"), um float ou um BigDecimal
+    payment.pre_approval.amount_per_payment = '200.00'
+
+    # opcional. Recebe uma string (de até 255 caracteres) e representa os detalhes da assinatura
+    payment.pre_approval.details = "detalhes da assinatura"
+
+    # opcional. Recebe uma data de quando a assinatura passa a valer. Não pode ser maior do que 2 anos da data atual, e precisa ser inferior a data de final_date (que pode ser maior em até 744 dias da data de início)
+    payment.pre_approval.initial_date = Date.new(2014, 3, 12)
+
+    # opcional. Recebe uma string que supostamente deveria levar às condições da sua assinatura
+    payment.pre_approval.reviewURL = "http://seuproduto.com/assinatura"
+
+    # Por fim gere a URL do pagseguro da mesma forma como nas compras/pagamentos normais.
+    redirect_to_url = payment.checkout_payment_url
+
 ## Validações
 
 Os modelos utilizados nesta gem utilizam as validações do ActiveModel (semelhantes às presentes em ActiveRecord/Rails) e incluem diversas validações, permitindo que se verifique a validade (utilizando object.valid?) dos dados antes de enviá-los ao PagSeguro. A gem não bloqueia o envio das informações caso os dados estejam inválidos, deixando este passo a cargo da sua aplicação, mas levanta erros caso o pag seguro retorne algum erro relativo às informações enviadas.
