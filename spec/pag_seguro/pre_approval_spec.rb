@@ -2,22 +2,6 @@
 require "spec_helper"
 
 describe PagSeguro::PreApproval do
-  let(:shared_attributes) do
-    {
-      name: "Super seguro para notebook",
-      details: "Toda segunda feira será cobrado o valor de R$150,00 para o seguro do notebook",
-      amount_per_payment: 150.00,
-      initial_date: Date.new(2015, 1, 17),
-      final_date: Date.new(2017, 1, 17),
-      max_amount_per_period: 200.00,
-      max_total_amount: 900.00,
-      review_URL: "http://sounoob.com.br/produto1"
-    }
-  end
-  let(:weekly_attributes){ shared_attributes.merge(period: :weekly, day_of_week: :monday) }
-  let(:monthly_attributes){ shared_attributes.merge(period: :monthly, day_of_month: 3) }
-  let(:yearly_attributes){ shared_attributes.merge(period: :yearly, day_of_year: PagSeguro::DayOfYear.new(day: 1, month: 3)) }
-
   it { should have_attribute_accessor(:name) }
   it { should have_attribute_accessor(:details) }
   it { should have_attribute_accessor(:amount_per_payment) }
@@ -33,6 +17,9 @@ describe PagSeguro::PreApproval do
 
   it { should validate_presence_of :name }
   it { should validate_presence_of :period }
+  it { should validate_presence_of :final_date }
+  it { should validate_presence_of :max_amount_per_period }
+  it { should validate_presence_of :max_total_amount }
 
   [:weekly, :monthly, :bimonthly, :trimonthly, :semiannually, :yearly].each do |period_type|
     it { should allow_value(period_type).for(:period) }
@@ -44,57 +31,70 @@ describe PagSeguro::PreApproval do
   it { should allow_value( nil ).for(:initial_date) }
   it { should_not allow_value( Time.now - 10.minutes ).for(:initial_date) }
   it { should allow_value( Time.now ).for(:initial_date) }
-  it { should allow_value( (2.years - 5.minutes).from_now ).for(:initial_date) }
-  it { should_not allow_value( 2.years.from_now + 5.minutes ).for(:initial_date) }
+  it { should allow_value( (PagSeguro::PreApproval::DATE_RANGE - 5.minutes).from_now ).for(:initial_date) }
+  it { should_not allow_value( PagSeguro::PreApproval::DATE_RANGE.from_now + 5.minutes ).for(:initial_date) }
 
-  it { should allow_value( nil ).for(:final_date) }
+  it { should_not allow_value( nil ).for(:final_date) }
   it { should_not allow_value( Time.now - 10.minutes ).for(:final_date) }
   it { should allow_value( Time.now ).for(:final_date) }
-  it { should allow_value( (2.years - 5.minutes).from_now ).for(:final_date) }
-  it { should_not allow_value( 2.years.from_now + 5.minutes ).for(:final_date) }
+  it { should allow_value( (PagSeguro::PreApproval::DATE_RANGE - 5.minutes).from_now ).for(:final_date) }
+  it { should_not allow_value( PagSeguro::PreApproval::DATE_RANGE.from_now + 5.minutes ).for(:final_date) }
 
   context "with an initial date" do
     subject { PagSeguro::PreApproval.new(initial_date: 5.days.from_now) }
 
-    it { should allow_value( nil ).for(:final_date) }
+    it { should_not allow_value( nil ).for(:final_date) }
     it { should_not allow_value( Time.now - 10.minutes + 5.days ).for(:final_date) }
     it { should allow_value( Time.now + 5.days ).for(:final_date) }
-    it { should allow_value( (2.years - 5.minutes + 5.days).from_now ).for(:final_date) }
-    it { should_not allow_value( 2.years.from_now + 5.minutes + 5.days ).for(:final_date) }    
+    it { should allow_value( (PagSeguro::PreApproval::DATE_RANGE - 5.minutes + 5.days).from_now ).for(:final_date) }
+    it { should_not allow_value( PagSeguro::PreApproval::DATE_RANGE.from_now + 5.minutes + 5.days ).for(:final_date) }    
+  end
+
+  describe "initialized with minimum attributes" do
+    subject{ build :minimum_pre_approval }
+    it { should be_valid }
   end
 
   describe "initialized with attributes" do
-    subject{ PagSeguro::PreApproval.new(shared_attributes) }
+    subject{ build :pre_approval }
 
+    it { should be_valid }
     its(:name){ should == "Super seguro para notebook" }
     its(:details){ should == "Toda segunda feira será cobrado o valor de R$150,00 para o seguro do notebook" }
-    its(:amount_per_payment){ should == 150.00 }
+    its(:amount_per_payment){ should == '150.00' }
     its(:initial_date){ Date.new(2015, 1, 17) }
     its(:final_date){ Date.new(2017, 1, 17) }
-    its(:max_amount_per_period){ should == 200.00 }
-    its(:max_total_amount){ should == 900.00 }
+    its(:max_amount_per_period){ should == '200.00' }
+    its(:max_total_amount){ should == '900.00' }
     its(:review_URL){ should == "http://sounoob.com.br/produto1" }
 
     context "weekly" do
-      subject{ PagSeguro::PreApproval.new(weekly_attributes) }
+      subject{ build :weekly_pre_approval }
 
       it { should ensure_inclusion_of(:day_of_week).in_array(%w(monday tuesday wednesday thursday friday saturday sunday)) }
 
       its(:period){ should == 'weekly' }
       its(:day_of_week){ should == 'monday' }
+      it { should be_weekly }
+      it { should_not be_monthly }
+      it { should_not be_yearly }
+
     end
 
     context "monthly" do
-      subject{ PagSeguro::PreApproval.new(monthly_attributes) }
+      subject{ build :monthly_pre_approval }
 
       it { should ensure_inclusion_of(:day_of_month).in_range(1..28) }
 
       its(:period){ should == 'monthly' }
       its(:day_of_month){ should == 3 }
+      it { should_not be_weekly }
+      it { should be_monthly }
+      it { should_not be_yearly }
     end
 
     context "yearly" do
-      subject{ PagSeguro::PreApproval.new(yearly_attributes) }
+      subject{ build :yearly_pre_approval }
 
       it { should validate_presence_of(:day_of_year) }
       it { should allow_value('10-22').for(:day_of_year) }
@@ -104,6 +104,9 @@ describe PagSeguro::PreApproval do
 
       its(:period){ should == 'yearly' }
       its(:day_of_year){ should == '03-01' }
+      it { should_not be_weekly }
+      it { should_not be_monthly }
+      it { should be_yearly }
     end
   end
 end

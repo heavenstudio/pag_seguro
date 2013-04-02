@@ -8,5 +8,6 @@ gem 'rspec'
 gem 'simplecov', require: false
 gem 'guard-rspec'
 gem 'shoulda-matchers'
+gem "factory_girl", "~> 4.0"
 gem 'growl'
 gem 'pry'

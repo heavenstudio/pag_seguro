@@ -1,14 +1,17 @@
 module PagSeguro
   class Item
     include ActiveModel::Validations
+    extend PagSeguro::ConvertFieldToDigit
     
     attr_accessor :id, :description, :amount, :quantity, :shipping_cost, :weight
+    attr_reader_as_digit :amount, :shipping_cost
         
-    validates_presence_of :id, :description, :amount, :quantity
-    validates_format_of :amount, with: /^\d+\.\d{2}$/, message: " must be a decimal and have 2 digits after the dot"
-    validates_format_of :shipping_cost, with: /^\d+\.\d{2}$/, message: " must be a decimal and have 2 digits after the dot"
-    validates_format_of :weight, with: /^\d+$/, message: " must be an integer"
-    validate :quantity_amount
+    validates :id, presence: true
+    validates :description, presence: true
+    validates :amount, pagseguro_decimal: true, presence: true
+    validates :shipping_cost, pagseguro_decimal: true
+    validates :weight, numericality: { only_integer: true, greater_than: 0, allow_blank: true }
+    validates :quantity, presence: true, numericality: { only_integer: true, greater_than: 0, less_than: 1000 }
     
     def initialize(attributes = {})
       @id = attributes[:id]
@@ -22,10 +25,5 @@ module PagSeguro
     def description
       @description.present? && @description.size > 100 ? @description[0..99] : @description
     end
-    
-    protected
-      def quantity_amount
-        errors.add(:quantity, " must be a number between 1 and 999") if @quantity.present? && (@quantity == "0" || @quantity.to_s !~ /^\d{1,3}$/)
-      end
-    end
+  end
 end

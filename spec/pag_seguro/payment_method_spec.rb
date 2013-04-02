@@ -6,7 +6,7 @@ describe PagSeguro::PaymentMethod do
   it { should have_attribute_accessor(:type) }      
     
   context "initalized with code and type" do
-    subject { PagSeguro::PaymentMethod.new(code: "101", type: "1") }
+    subject { build :payment_method, code: "101", type: "1" }
 
     its(:code){ should == 101 }
     its(:type){ should == 1 }
@@ -15,35 +15,35 @@ describe PagSeguro::PaymentMethod do
   describe "types" do
     let(:payment_method){ PagSeguro::PaymentMethod.new }
     
-    it "should be credit card if type is 1" do
-      payment_method.stub(:type){ 1 }
-      payment_method.should be_credit_card
+    context "with type 1" do
+      subject { build :payment_method, type: 1 }
+      it { should be_credit_card }
     end
     
-    it "should be bank bill if type is 2" do
-      payment_method.stub(:type){ 2 }
-      payment_method.should be_bank_bill
+    context "with if type 2" do
+      subject { build :payment_method, type: 2 }
+      it { should be_bank_bill }
     end
     
-    it "should be online debit if type is 3" do
-      payment_method.stub(:type){ 3 }
-      payment_method.should be_online_debit
+    context "with if type 3" do
+      subject { build :payment_method, type: 3 }
+      it { should be_online_debit }
     end
 
-    it "should be PagSeguro balance if type is 4" do
-      payment_method.stub(:type){ 4 }
-      payment_method.should be_pag_seguro_balance
+    context "with if type 4" do
+      subject { build :payment_method, type: 4 }
+      it { should be_pag_seguro_balance }
     end
     
-    it "should be oi paggo if type is 5" do
-      payment_method.stub(:type){ 5 }
-      payment_method.should be_oi_paggo
+    context "with type 5" do
+      subject { build :payment_method, type: 5 }
+      it { should be_oi_paggo }
     end
   end
     
   describe "codes" do
     def should_have_meaning_for_code(meaning, code)
-      PagSeguro::PaymentMethod.new(code: code).name.should == meaning
+      PagSeguro::PaymentMethod.new(code: code).name.should be == meaning
     end
     
     it { should_have_meaning_for_code("Cartão de crédito Visa", 101) }

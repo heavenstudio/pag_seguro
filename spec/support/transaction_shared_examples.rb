@@ -179,31 +179,31 @@ shared_examples_for "a transaction" do
   end
 
   describe "::status_for" do
-    it "should return :processing when 1" do
+    it "should return :processing for 1" do
       subject.status_for(1).should == :processing
     end
 
-    it "should return :in_analysis when 2" do
+    it "should return :in_analysis for 2" do
       subject.status_for(2).should == :in_analysis
     end
 
-    it "should return :approved when 3" do
+    it "should return :approved for 3" do
       subject.status_for(3).should == :approved
     end
 
-    it "should return :available when 4" do
+    it "should return :available for 4" do
       subject.status_for(4).should == :available
     end
 
-    it "should return :disputed when 5" do
+    it "should return :disputed for 5" do
       subject.status_for(5).should == :disputed
     end
 
-    it "should return :returned when 6" do
+    it "should return :returned for 6" do
       subject.status_for(6).should == :returned
     end
 
-    it "should return :cancelled when 7" do
+    it "should return :cancelled for 7" do
       subject.status_for(7).should == :cancelled
     end
   end

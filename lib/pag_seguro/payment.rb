@@ -1,13 +1,16 @@
 module PagSeguro
   class Payment
     include ActiveModel::Validations
+    extend PagSeguro::ConvertFieldToDigit
 
-    attr_accessor :id, :email, :token, :items, :sender, :shipping, :extra_amount, :redirect_url, :max_uses, :max_age, :response
+    attr_accessor :id, :email, :token, :items, :sender, :shipping, :extra_amount,
+      :redirect_url, :max_uses, :max_age, :response, :pre_approval
+    attr_reader_as_digit :extra_amount
     
     validates_presence_of :email, :token
-    validates :extra_amount, decimal: true
+    validates :extra_amount, pagseguro_decimal: true
     validates_format_of :redirect_url, with: URI::regexp(%w(http https)), message: " must give a correct url for redirection", allow_blank: true
-    validate :max_uses_number, :max_age_number
+    validate :max_uses_number, :max_age_number, :valid_pre_approval, :valid_items
     
     def initialize(email = nil, token = nil, options = {})
       @email        = email unless email.nil?
@@ -20,6 +23,7 @@ module PagSeguro
       @redirect_url = options[:redirect_url]
       @max_uses     = options[:max_uses]
       @max_age      = options[:max_age]
+      @pre_approval = options[:pre_approval]
     end
     
     def self.checkout_payment_url(code)
@@ -28,7 +32,7 @@ module PagSeguro
     
     def checkout_xml
       xml_content = File.open( File.dirname(__FILE__) + "/checkout.xml.haml" ).read
-      Haml::Engine.new(xml_content).render(nil, items: @items, payment: self, sender: @sender, shipping: @shipping)
+      Haml::Engine.new(xml_content).render(nil, items: @items, payment: self, sender: @sender, shipping: @shipping, pre_approval: @pre_approval)
     end
     
     def checkout_url_with_params
@@ -60,6 +64,14 @@ module PagSeguro
       
       def max_age_number
         errors.add(:max_age, " must be an integer grater or equal to 30") if @max_age.present? && @max_age.to_i < 30
+      end
+
+      def valid_pre_approval
+        errors.add(:pre_approval, " must be valid") if pre_approval && !pre_approval.valid?
+      end
+
+      def valid_items
+        errors.add(:items, " must be all valid") if items.blank? || !items.all?(&:valid?)
       end
             
       def send_checkout

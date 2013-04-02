@@ -27,11 +27,11 @@ module PagSeguro
     end
     
     def phone_ddd
-      @phone_ddd if @phone_ddd =~ /^\d{2}$/
+      @phone_ddd if @phone_ddd.to_s =~ /^\d{2}$/
     end
     
     def phone_number
-      @phone_number if @phone_number =~/^\d{8,9}$/
+      @phone_number if @phone_number.to_s =~/^\d{8,9}$/
     end
   end
 end

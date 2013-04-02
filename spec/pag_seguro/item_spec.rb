@@ -1,14 +1,5 @@
 require "spec_helper"
 
-valid_attributes = {
-  id: 1,
-  description: "descrevendo um item",
-  amount: "100.50",
-  quantity: 1,
-  shipping_cost: "10.50",
-  weight: 300
-}
-
 describe PagSeguro::Item do
   it { should have_attribute_accessor(:id) }
   it { should have_attribute_accessor(:description) }
@@ -18,25 +9,33 @@ describe PagSeguro::Item do
   it { should have_attribute_accessor(:weight) }
 
   it "should be valid with valid attributes" do
-    PagSeguro::Item.new(valid_attributes).should be_valid
+    build(:item).should be_valid
   end
 
   it { should validate_presence_of :id }
   it { should validate_presence_of :description }
   it { should validate_presence_of :amount }
-  it { should validate_presence_of :quantity }
+  
+  it { should_not allow_value(nil).for(:quantity) }
+  it { should_not allow_value(0).for(:quantity) }
+  it { should_not allow_value(1000).for(:quantity) }
+  it { should allow_value(1).for(:quantity) }
+  it { should allow_value(999).for(:quantity) }
 
-  it { should_not allow_value("10").for(:amount) }
   it { should_not allow_value("10,50").for(:amount) }
   it { should_not allow_value("R$ 10.50").for(:amount) }
   it { should_not allow_value("-10.50").for(:amount) }
   it { should allow_value("10.50").for(:amount) }
-
-  it { should_not allow_value("10").for(:shipping_cost) }
+  it { should allow_value(10).for(:amount) }
+  it { should allow_value(BigDecimal.new("10.5")).for(:amount) }
+  
   it { should_not allow_value("10,50").for(:shipping_cost) }
   it { should_not allow_value("R$ 10.50").for(:shipping_cost) }
   it { should_not allow_value("-10.50").for(:shipping_cost) }
   it { should allow_value("10.50").for(:shipping_cost) }
+  it { should allow_value(10).for(:shipping_cost) }
+  it { should allow_value(BigDecimal.new("10.5")).for(:shipping_cost) }
+  it { should allow_value(nil).for(:shipping_cost) }
 
   it { should_not allow_value("1000").for(:quantity) }
   it { should_not allow_value("0").for(:quantity) }
