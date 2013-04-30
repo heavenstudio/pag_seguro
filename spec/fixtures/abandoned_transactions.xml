@@ -1,0 +1,23 @@
+<transactionSearchResult>
+    <date>2011-02-16T20:14:35.000-02:00</date>
+    <currentPage>1</currentPage>
+    <resultsInThisPage>2</resultsInThisPage>
+    <totalPages>1</totalPages>
+    <transactions>
+        <transaction>
+            <date>2011-02-05T15:46:12.000-02:00</date>
+            <lastEventDate>2011-02-15T17:39:14.000-03:00</lastEventDate>
+            <code>EDDDC505-8A26-494E-96C2-53D285A470C2</code>
+            <type>1</type>
+            <grossAmount>6.00</grossAmount>
+        </transaction>
+        <transaction>
+            <date>2011-02-07T18:57:52.000-02:00</date>
+            <lastEventDate>2011-02-14T21:37:24.000-03:00</lastEventDate>
+            <reference>REFCODE2</reference>
+            <code>97B1F57E-0EC0-4D03-BF7E-C4694CF6062E</code>
+            <type>1</type>
+            <grossAmount>6.00</grossAmount>
+        </transaction>
+    </transactions>
+</transactionSearchResult>
