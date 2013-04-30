@@ -125,6 +125,8 @@ Você pode consultar as transações por uma data através do método `PagSeguro
 
 Além das opções acima, você pode enviar também as opções `:page` (que pelo padrão é a primeira), `:max_page_results` (que por padrão é 50) e `abandoned`, que por padrão é falso mas caso seja passado como verdadeiro irá buscar as transações abandonadas (onde o processo de cadastro/compra não foi concluído). Obviamente a data final precisa ser maior que a inicial, não podem haver mais de 30 dias de diferença entre as duas, e a data inicial precisa estar dentro dos últimos 6 meses.
 
+Obs.: Se for consultar as transações abandonadas, não utilize Time.now como `final_date`. Por algum motivo o PagSeguro não permite consultar as transações abandonadas até o momento atual, resultando em um erro 400 (bad request). Utilize 15.minutes.ago ou Date.today.
+
 #### Consulta de Transação por código
 
 O código das transações são enviadas nas Notificações de Transações do PagSeguro (de forma assíncrona), e podem ser obtidas através do método `notification.transaction_id`, e também podem ser obtidas de forma síncrona assim que o usuário retorna à loja após ter concluído a compra. Este código também pode ser encontrado através da busca de transações por período.
