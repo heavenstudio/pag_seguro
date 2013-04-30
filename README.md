@@ -123,7 +123,7 @@ Você pode consultar as transações por uma data através do método `PagSeguro
       ...
     end
 
-Além das opções acima, você pode enviar também as opções `:page` (que pelo padrão é a primeira) e `:max_page_results` (que por padrão é 50). Obviamente a data final precisa ser maior que a inicial, não podem haver mais de 30 dias de diferença entre as duas, e a data inicial precisa estar dentro dos últimos 6 meses.
+Além das opções acima, você pode enviar também as opções `:page` (que pelo padrão é a primeira), `:max_page_results` (que por padrão é 50) e `abandoned`, que por padrão é falso mas caso seja passado como verdadeiro irá buscar as transações abandonadas (onde o processo de cadastro/compra não foi concluído). Obviamente a data final precisa ser maior que a inicial, não podem haver mais de 30 dias de diferença entre as duas, e a data inicial precisa estar dentro dos últimos 6 meses.
 
 #### Consulta de Transação por código
 
@@ -197,10 +197,6 @@ Esta gem possui testes extensivos utilizando Rspec. Para rodar os testes, altere
 
     bundle
     guard
-
-## Todo
-
-Adicionar código para realizar consultas ao [Histórico de Transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-intervalo-de-datas.html)
 
 ## Contribuindo
 

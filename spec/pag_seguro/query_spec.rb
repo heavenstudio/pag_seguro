@@ -18,6 +18,24 @@ describe PagSeguro::Query do
       expect { PagSeguro::Query.find nil, nil }.to raise_error(RestClient::Exception, "401 Unauthorized")
     end
 
+    context "with abandoned set to false" do
+      it "should try to fetch transactions" do
+        params = double(:params)
+        PagSeguro::Query.stub(search_params: params)
+        RestClient.should_receive(:get).with("https://ws.pagseguro.uol.com.br/v2/transactions", params: params)
+        PagSeguro::Query.find "email", "token"
+      end
+    end
+
+    context "with abandoned set to true" do
+      it "should try to fetch abandoned transactions" do
+        params = double(:params)
+        PagSeguro::Query.stub(search_params: params)
+        RestClient.should_receive(:get).with("https://ws.pagseguro.uol.com.br/v2/transactions/abandoned", params: params)
+        PagSeguro::Query.find "email", "token", abandoned: true
+      end      
+    end
+
     context "with a stubbed response" do
       before { RestClient.stub(get: transactions_xml) }
       subject{ PagSeguro::Query.find "email", "token", options: true }
