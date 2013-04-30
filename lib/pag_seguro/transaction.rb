@@ -86,7 +86,7 @@ module PagSeguro
     end
     
     def payment_method
-      pm = PaymentMethod.new(code: parse_css("paymentMethod code"), type: parse_css("paymentMethod type"))
+      PaymentMethod.new code: parse_css("paymentMethod code"), type: parse_css("paymentMethod type")
     end
     
     def sender
