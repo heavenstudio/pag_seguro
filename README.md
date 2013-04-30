@@ -73,7 +73,9 @@ Com exceção do atributo response (que é utilizado para armazenar a resposta e
 
 ### API de Notificação
 
-As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na [Notificação de transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-codigo.html). Obs.: Até o momento o PagSeguro não permite configurar uma url dinâmica para envio das notificação ( e apenas permite uma url por conta ), então provavelemente será necessário que crie uma conta diferente no PagSeguro para cada sistema que desenvolver.
+As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na [Notificação de transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-codigo.html). Se quiser configurar uma url dinâmica para envio das notificação é necessário ativar a página de redirecionamento dinâmico em [Integrações > Página de redirecionamento](https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml), e passar o argumento `redirect_url` para o objeto PagSeguro::Payment:
+
+    PagSeguro::Payment.new(email, token, id: invoice.id, redirect_url: "http://lojamodelo.com.br/checkout")
 
 O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST. Segue um exemplo de uso da notificação em uma aplicação rails (este exemplo supõe a existência de um `resources :notifications` em suas rotas, e um modelo `Invoice` responsável pelos pagamentos):
 
@@ -108,15 +110,28 @@ Para este exemplo, o url configurada na [Notificação de transações](https://
 
 ### Consulta de Transações
 
-Para realizar a consulta de uma transação é preciso obter o código da transação. Este código é enviado nas Notificações de Transações do PagSeguro (de forma assíncrona), através do método `notification.transaction_id` ou de forma síncrona assim que o usuário retorna à loja após ter concluído a compra.
+Há duas maneiras de se realizar a consulta das transações, a primeira delas buscando o código de uma transação, e outra buscando por todas as transações em um determinado período
+
+#### Consulta de Transações por Período
+
+Você pode consultar as transações por uma data através do método `PagSeguro::Query::find`, informando seu email, token, e algumas opções adicionais:
+
+    transactions = PagSeguro::Query.find(email, token, initial_date: 30.days.ago, final_date: Time.now)
+
+    transactions.each do |transaction|
+      puts "id: #{transaction.id}, transaction_id: #{transaction.transaction_id}"
+      ...
+    end
+
+Além das opções acima, você pode enviar também as opções `:page` (que pelo padrão é a primeira) e `:max_page_results` (que por padrão é 50). Obviamente a data final precisa ser maior que a inicial, não podem haver mais de 30 dias de diferença entre as duas, e a data inicial precisa estar dentro dos últimos 6 meses.
+
+#### Consulta de Transação por código
+
+O código das transações são enviadas nas Notificações de Transações do PagSeguro (de forma assíncrona), e podem ser obtidas através do método `notification.transaction_id`, e também podem ser obtidas de forma síncrona assim que o usuário retorna à loja após ter concluído a compra. Este código também pode ser encontrado através da busca de transações por período.
 
 Para buscar informações da transação de forma síncrona, é necessário que acesse sua conta no PagSeguro, e clique em [Integrações > Página de redirecionamento](https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml) e ative o redirecionamento com o código da transação, definindo o nome do parâmetro que será enviado para sua aplicação (e.g.: http://lojamodelo.com.br/checkout?transaction_id=E884542-81B3-4419-9A75-BCC6FB495EF1 ). O redirecionamento para esta página é executado através de uma requisição GET.
 
-Caso queira utilizar uma URL dinâmica de retorno, é necessário ativar a página de redirecionamento dinâmico em [Integrações > Página de redirecionamento](https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml), e passar o argumento `redirect_url` para o objeto PagSeguro::Payment:
-
-    PagSeguro::Payment.new(email, token, id: invoice.id, redirect_url: "http://lojamodelo.com.br/checkout")
-
-Você pode consultar as informações da transação através do `PagSeguro::Query`, que possui os mesmos attributos e métodos que `PagSeguro::Notification` para consulta da transação:
+Você pode consultar as informações da transação instanciando a classe `PagSeguro::Query`, que possui os mesmos attributos e métodos que uma notificação:
 
     query = PagSeguro::Query.new(email, token, "E884542-81B3-4419-9A75-BCC6FB495EF1")
 
@@ -126,9 +141,9 @@ Você pode consultar as informações da transação através do `PagSeguro::Que
 
 ### Pagamento Recorrente
 
-**Primeiro de tudo vale ressaltar de que a API de pagamento recorrente não está documentada oficialmente pelo pagseguro, apesar de ter sido lançada em dezembro de 2012. Esta funcionalidade foi criada com base em um post em um [blog](http://sounoob.com.br/requisicao-de-pagamento-do-pagseguro-com-assinatura-associada-usando-php/) e em tentativa e erro. Use por sua conta e risco.**
+**Primeiro de tudo vale ressaltar que a API de pagamento recorrente não está documentada oficialmente pelo pagseguro, apesar de ter sido lançada em dezembro de 2012. Esta funcionalidade foi criada com base em um post em um [blog](http://sounoob.com.br/requisicao-de-pagamento-do-pagseguro-com-assinatura-associada-usando-php/) e em tentativa e erro. Use por sua conta e risco.**
 
-Através desta gem é possível enviar a requisição de uma pagamento recorrente juntamente com o pedido de compra (e não é possível enviar um pedido de assinatura sem enviar adicionar nenhum ítem ao pagamento). Para usá-la, basta adicionar um pre_approval a um pagamento:
+É possível enviar a requisição de uma pagamento recorrente juntamente com o pedido de compra (e por enquanto não é possível enviar um pedido de assinatura sem enviar adicionar nenhum ítem ao pagamento). Para usá-la, basta adicionar um `pre_approval` a um pagamento:
     
     # suponho que uma variavel payment (do tipo PagSeguro::Payment) já foi instanciada, e que o payment.items não está vazio
     payment.pre_approval = PagSeguro::PreApproval.new
@@ -200,3 +215,5 @@ Desenvolvida por [Stefano Diem Benatti](mailto:stefano@heavenstudio.com.br)
 Rafael Castilho (<http://github.com/castilhor>)
 
 Rafael Ivan Garcia (https://github.com/rafaelivan)
+
+efmiglioranza (https://github.com/efmiglioranza)
