@@ -6,3 +6,4 @@ coverage/*
 doc/*
 spec/pag_seguro/integration/config_example.yml
 .DS_Store
+.sublime-project
