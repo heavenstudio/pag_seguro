@@ -47,7 +47,7 @@ describe PagSeguro::PreApproval do
     it { should_not allow_value( Time.now - 10.minutes + 5.days ).for(:final_date) }
     it { should allow_value( Time.now + 5.days ).for(:final_date) }
     it { should allow_value( (PagSeguro::PreApproval::DATE_RANGE - 5.minutes + 5.days).from_now ).for(:final_date) }
-    it { should_not allow_value( PagSeguro::PreApproval::DATE_RANGE.from_now + 5.minutes + 5.days ).for(:final_date) }    
+    it { should_not allow_value( PagSeguro::PreApproval::DATE_RANGE.from_now + 5.minutes + 5.days ).for(:final_date) }
   end
 
   describe "initialized with minimum attributes" do

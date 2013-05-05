@@ -4,7 +4,7 @@ class MockResponse
   def code
     10000
   end
-  
+
   def body
     " error description"
   end
