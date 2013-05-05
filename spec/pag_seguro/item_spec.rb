@@ -25,6 +25,7 @@ describe PagSeguro::Item do
   it { should_not allow_value("10,50").for(:amount) }
   it { should_not allow_value("R$ 10.50").for(:amount) }
   it { should_not allow_value("-10.50").for(:amount) }
+  it { should_not allow_value("10.50\nanything").for(:amount) }
   it { should allow_value("10.50").for(:amount) }
   it { should allow_value(10).for(:amount) }
   it { should allow_value(BigDecimal.new("10.5")).for(:amount) }
@@ -32,6 +33,7 @@ describe PagSeguro::Item do
   it { should_not allow_value("10,50").for(:shipping_cost) }
   it { should_not allow_value("R$ 10.50").for(:shipping_cost) }
   it { should_not allow_value("-10.50").for(:shipping_cost) }
+  it { should_not allow_value("10.50\nanything").for(:shipping_cost) }
   it { should allow_value("10.50").for(:shipping_cost) }
   it { should allow_value(10).for(:shipping_cost) }
   it { should allow_value(BigDecimal.new("10.5")).for(:shipping_cost) }

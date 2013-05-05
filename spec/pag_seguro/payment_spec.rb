@@ -52,6 +52,7 @@ describe PagSeguro::Payment do
     it { should_not allow_value('10,50').for(:extra_amount) }
     it { should_not allow_value('R$ 10.50').for(:extra_amount) }
     it { should_not allow_value('-10.50').for(:extra_amount) }
+    it { should_not allow_value('10.50\nanything').for(:extra_amount) }
     it { should allow_value('10.50').for(:extra_amount) }
     it { should allow_value(10).for(:extra_amount) }
     it { should allow_value(BigDecimal.new('10.5')).for(:extra_amount) }
