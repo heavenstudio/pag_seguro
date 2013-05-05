@@ -33,7 +33,7 @@ describe PagSeguro::Query do
         PagSeguro::Query.stub(search_params: params)
         RestClient.should_receive(:get).with("https://ws.pagseguro.uol.com.br/v2/transactions/abandoned", params: params)
         PagSeguro::Query.find "email", "token", abandoned: true
-      end      
+      end
     end
 
     context "with a stubbed response" do
@@ -60,7 +60,7 @@ describe PagSeguro::Query do
       it { search_params.keys.should_not include :page }
       it { search_params[:finalDate].should include Date.today.iso8601 }
       it { search_params[:initialDate].should include Date.yesterday.iso8601 }
-      
+
       it "should call parse_dates" do
         PagSeguro::Query.should_receive(:parse_dates)
         search_params

@@ -2,12 +2,12 @@
 require "spec_helper"
 
 describe PagSeguro::Sender do
-  context "instance" do    
+  context "instance" do
     it { should have_attribute_accessor(:email) }
     it { should have_attribute_accessor(:name) }
     it { should have_attribute_accessor(:phone_ddd) }
     it { should have_attribute_accessor(:phone_number) }
-    
+
     context "initialized with all attributes" do
       subject { PagSeguro::Sender.new attributes_for(:sender) }
       its(:name){ should == "Stefano Diem Benatti" }
@@ -15,7 +15,7 @@ describe PagSeguro::Sender do
       its(:phone_ddd){ should == 11 }
       its(:phone_number){ should == 993430994 }
     end
-    
+
     context "with invalid e-mail" do
       subject { build :sender, email: "nothing" }
       its(:email){ should be_nil }
@@ -50,7 +50,7 @@ describe PagSeguro::Sender do
       it { should be_a_valid_name }
       its(:name){ should == "a" * 50 }
     end
-        
+
     context "with double spaces in name" do
       subject { build :sender, name: "Stefano   Benatti" }
       it { should be_a_valid_name }

@@ -18,9 +18,9 @@ describe PagSeguro::Payment do
     it 'should be a valid xml' do
       expect { Nokogiri::XML(payment.checkout_xml) { |config| config.options = Nokogiri::XML::ParseOptions::STRICT } }.to_not raise_error
     end
-    
+
     its(:checkout_xml){ should match(/^<\?xml.+encoding="UTF-8".+\?>$/) }
-    
+
     describe 'settings' do
       it { xml_content('checkout reference').should be_empty }
       it { xml_content('checkout extraAmount').should be_empty }
@@ -33,22 +33,22 @@ describe PagSeguro::Payment do
         before{ payment.id = 305 }
         it { xml_content('checkout reference').should == '305' }
       end
-      
+
       context 'with extra amount' do
         before{ payment.extra_amount = '10.50' }
         it { xml_content('checkout extraAmount').should == '10.50' }
       end
-      
+
       context 'with redirect url' do
         before{ payment.redirect_url = 'http://heavenstudio.com.br' }
         it { xml_content('checkout redirectURL').should == 'http://heavenstudio.com.br' }
       end
-      
+
       context 'with max uses' do
         before{ payment.max_uses = '10' }
         it { xml_content('checkout maxUses').should == '10' }
       end
-      
+
       context 'with max age' do
         before{ payment.max_age = '5000' }
         it { xml_content('checkout maxAge').should == '5000' }
@@ -65,12 +65,12 @@ describe PagSeguro::Payment do
       it { xml_collection('checkout items item quantity').should == ['4', '1', '2', '89'] }
       it { xml_collection('checkout items item shippingCost').should == ['1.00', '12.00'] }
       it { xml_collection('checkout items item weight').should == ['10', '300', '400'] }
-      
+
       it 'should escape html in item description' do
         payment.checkout_xml.should include('A Book &amp; Cover')
       end
     end
-    
+
     describe 'sender info' do
       context 'without sender' do
         it { xml_content('checkout sender name').should be_empty }
@@ -88,7 +88,7 @@ describe PagSeguro::Payment do
         it { xml_content('checkout sender phone number').should == '993430994' }
       end
     end
-    
+
     describe 'shipping info' do
       context 'without shipping' do
         it { xml_content('checkout shipping').should be_empty }

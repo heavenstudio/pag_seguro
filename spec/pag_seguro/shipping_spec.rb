@@ -18,14 +18,14 @@ describe PagSeguro::Shipping do
 
   describe "instance" do
     subject{ build(:shipping) }
-    
+
     it { should be_valid }
     its(:cost){ should == "12.13" }
     its(:postal_code){ should == "05363000" }
 
     context "with invalid postal_code" do
       subject{ build(:shipping, postal_code: 1234567) }
-      its(:postal_code){ should be_blank }  
+      its(:postal_code){ should be_blank }
     end
 
     context "with type 1" do
