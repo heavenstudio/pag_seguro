@@ -1,25 +1,28 @@
 module PagSeguro
   class Query < Transaction
-  
-    def initialize(email = nil, token = nil, transaction_code=nil)
+
+    def initialize(email, token, transaction_code)
       raise "Needs a transaction code" if transaction_code.blank?
       raise "Needs an email" if email.blank?
       raise "Needs a token" if token.blank?
       @data = transaction_data(email, token, transaction_code)
     end
-      
+
     def self.find(email, token, options={})
       url = Transaction::PAGSEGURO_TRANSACTIONS_URL
       url += "/abandoned" if options[:abandoned]
+
       transactions_data = Nokogiri::XML(RestClient.get url, params: search_params(email, token, options))
-      transactions_data.css("transaction").map{|transaction_xml| Transaction.new(transaction_xml) }
+      transactions_data.css("transaction").map do |transaction_xml|
+        Transaction.new(transaction_xml)
+      end
     end
 
     def self.search_params(email, token, options={})
       params = {email: email, token: token}
       params[:initialDate], params[:finalDate] = parse_dates(options)
-      params[:page]                            = options[:page] if options[:page]
-      params[:maxPageResults]                  = options[:max_page_results] if options[:max_page_results]
+      params[:page] = options[:page] if options[:page]
+      params[:maxPageResults] = options[:max_page_results] if options[:max_page_results]
       params
     end
 
@@ -34,10 +37,11 @@ module PagSeguro
 
       return initial_date.to_time.iso8601, final_date.to_time.iso8601
     end
- 
+
     private
       def transaction_data(email, token, transaction_code)
-        super RestClient.get "#{PAGSEGURO_TRANSACTIONS_URL}/#{transaction_code}", params: {email: email, token: token}
+        transaction_url = "#{PAGSEGURO_TRANSACTIONS_URL}/#{transaction_code}"
+        super RestClient.get transaction_url, params: {email: email, token: token}
       end
   end
 end

@@ -6,7 +6,7 @@ module PagSeguro
     attr_accessor :data
 
     PAGSEGURO_TRANSACTIONS_URL  = "https://ws.pagseguro.uol.com.br/v2/transactions"
-    
+
     # possible status values
     PAGSEGURO_PROCESSING        = 1
     PAGSEGURO_IN_ANALYSIS       = 2
@@ -15,14 +15,14 @@ module PagSeguro
     PAGSEGURO_DISPUTED          = 5
     PAGSEGURO_RETURNED          = 6
     PAGSEGURO_CANCELLED         = 7
-    
+
     # possible type values
     PAGSEGURO_PAYMENT           = 1
     PAGSEGURO_TRANSFER          = 2
     PAGSEGURO_ADDITION_OF_FUNDS = 3
     PAGSEGURO_CHARGE            = 4
     PAGSEGURO_BONUS             = 5
-  
+
     def self.status_for(status_code)
       case status_code
       when PAGSEGURO_PROCESSING  then :processing
@@ -42,7 +42,7 @@ module PagSeguro
     def id
       @data.css("reference").first.content
     end
-    
+
     def gross_amount
       @data.css("grossAmount").first.content
     end
@@ -66,29 +66,33 @@ module PagSeguro
     def installment_count
       @data.css("installmentCount").first.content.to_i
     end
-    
+
     def item_count
       @data.css("itemCount").first.content.to_i
     end
-    
+
     def transaction_id
       @data.css("code").first.content
     end
-    
+
     def date
       DateTime.iso8601( @data.css("date").first.content )
     end
-  
+
     def items
       @data.css("items item").map do |i|
-        Item.new(id: parse_item(i, "id"), description: parse_item(i, "description"), quantity: parse_item(i, "quantity"), amount: parse_item(i, "amount"))
+        Item.new id: parse_item(i, "id"),
+                 description: parse_item(i, "description"),
+                 quantity: parse_item(i, "quantity"),
+                 amount: parse_item(i, "amount")
       end
     end
-    
+
     def payment_method
-      PaymentMethod.new code: parse_css("paymentMethod code"), type: parse_css("paymentMethod type")
+      PaymentMethod.new code: parse_css("paymentMethod code"),
+                        type: parse_css("paymentMethod type")
     end
-    
+
     def sender
       sn = Sender.new
       sn.name = parse_css("sender name")
@@ -97,7 +101,7 @@ module PagSeguro
       sn.phone_number = parse_css("sender phone number")
       sn
     end
-    
+
     def shipping
       sh = Shipping.new
       sh.type = parse_css("shipping type")
@@ -111,7 +115,7 @@ module PagSeguro
       sh.complement = parse_css("shipping address complement")
       sh
     end
-    
+
     def status
       @data.css("status").first.content.to_i
     end
@@ -123,7 +127,7 @@ module PagSeguro
     def processing?
       PAGSEGURO_PROCESSING == status
     end
-    
+
     def in_analysis?
       PAGSEGURO_IN_ANALYSIS == status
     end
@@ -131,43 +135,43 @@ module PagSeguro
     def approved?
       PAGSEGURO_APPROVED == status
     end
-    
+
     def available?
       PAGSEGURO_AVAILABLE == status
     end
-    
+
     def disputed?
       PAGSEGURO_DISPUTED == status
     end
-    
+
     def returned?
       PAGSEGURO_RETURNED == status
     end
-    
+
     def cancelled?
       PAGSEGURO_CANCELLED == status
     end
-    
+
     def payment?
       PAGSEGURO_PAYMENT == type
     end
-    
+
     def transfer?
       PAGSEGURO_TRANSFER == type
     end
-    
+
     def addition_of_funds?
       PAGSEGURO_ADDITION_OF_FUNDS == type
     end
-    
+
     def charge?
       PAGSEGURO_CHARGE == type
     end
-    
+
     def bonus?
       PAGSEGURO_BONUS == type
     end
-  
+
     protected
       def transaction_data(transaction_xml)
         transaction_xml.instance_of?(Nokogiri::XML::Element) ? transaction_xml : Nokogiri::XML(transaction_xml)
@@ -176,10 +180,10 @@ module PagSeguro
       def parse_item(data, attribute)
         data.css(attribute).first.content
       end
-      
+
       def parse_css(selector)
         value = @data.css(selector).first
         value.nil? ? nil : value.content
-      end      
+      end
   end
 end
