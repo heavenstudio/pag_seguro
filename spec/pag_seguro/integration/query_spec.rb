@@ -14,7 +14,7 @@ describe PagSeguro::Query do
         @query = PagSeguro::Query.new(EMAIL, TOKEN, TRANSACTION_ID)
       end
     end
-    
+
     it { @query.transaction_id.should be_present }
     it { @query.date.should be_present }
     it { @query.id.should be_present }
@@ -39,7 +39,7 @@ describe PagSeguro::Query do
         item.quantity.should be_present
       end
     end
-    
+
     it { @query.sender.email.should be_present }
     it { @query.shipping.type.should be_present }
   end

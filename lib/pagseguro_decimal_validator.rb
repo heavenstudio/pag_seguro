@@ -1,6 +1,8 @@
 class PagseguroDecimalValidator < ActiveModel::EachValidator
   def validate_each(object, attribute, value)
-    object.errors.add(attribute, error_message) unless value.nil? || value =~ /^\d+\.\d{2}$/
+    unless value.nil? || value =~ /\A\d+\.\d{2}\z/
+      object.errors.add(attribute, error_message)
+    end
   end
 
   def error_message

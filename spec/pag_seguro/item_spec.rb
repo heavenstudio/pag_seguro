@@ -15,7 +15,7 @@ describe PagSeguro::Item do
   it { should validate_presence_of :id }
   it { should validate_presence_of :description }
   it { should validate_presence_of :amount }
-  
+
   it { should_not allow_value(nil).for(:quantity) }
   it { should_not allow_value(0).for(:quantity) }
   it { should_not allow_value(1000).for(:quantity) }
@@ -25,13 +25,15 @@ describe PagSeguro::Item do
   it { should_not allow_value("10,50").for(:amount) }
   it { should_not allow_value("R$ 10.50").for(:amount) }
   it { should_not allow_value("-10.50").for(:amount) }
+  it { should_not allow_value("10.50\nanything").for(:amount) }
   it { should allow_value("10.50").for(:amount) }
   it { should allow_value(10).for(:amount) }
   it { should allow_value(BigDecimal.new("10.5")).for(:amount) }
-  
+
   it { should_not allow_value("10,50").for(:shipping_cost) }
   it { should_not allow_value("R$ 10.50").for(:shipping_cost) }
   it { should_not allow_value("-10.50").for(:shipping_cost) }
+  it { should_not allow_value("10.50\nanything").for(:shipping_cost) }
   it { should allow_value("10.50").for(:shipping_cost) }
   it { should allow_value(10).for(:shipping_cost) }
   it { should allow_value(BigDecimal.new("10.5")).for(:shipping_cost) }
@@ -41,7 +43,7 @@ describe PagSeguro::Item do
   it { should_not allow_value("0").for(:quantity) }
   it { should_not allow_value("-1").for(:quantity) }
   it { should allow_value("1").for(:quantity) }
-    
+
   it { should_not allow_value("-10").for(:weight) }
   it { should_not allow_value("10.5").for(:weight) }
   it { should_not allow_value("10,5").for(:weight) }

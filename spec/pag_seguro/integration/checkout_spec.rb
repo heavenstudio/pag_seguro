@@ -9,7 +9,7 @@ describe PagSeguro::Payment do
       pending "You need to set your token for your PagSeguro account in spec/pag_seguro/integration/config.yml in order to run this spec"
     end
   end
-  
+
   context "with all fields" do
     let(:payment){ build :payment_with_all_fields, email: EMAIL, token: TOKEN }
     subject { payment }
@@ -37,7 +37,7 @@ describe PagSeguro::Payment do
   context "with items" do
     let(:payment){ build :payment_with_items, email: EMAIL, token: TOKEN }
     subject { payment }
-    
+
     its('code.size'){ should == 32 }
     its(:date){ should be_an_instance_of(DateTime) }
 
@@ -52,7 +52,7 @@ describe PagSeguro::Payment do
       expect { payment.code }.to raise_error(PagSeguro::Errors::InvalidData)
     end
   end
-    
+
   it "should raise unauthorized error if email and token do not match" do
     payment = build :payment, email: "not_a_user@not_an_email.com", token: "NOTATOKEN7F048A09A8AEFDD1E5A7B91"
     expect { payment.code }.to raise_error(PagSeguro::Errors::Unauthorized)

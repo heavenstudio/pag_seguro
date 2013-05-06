@@ -7,7 +7,7 @@ end
 describe PagSeguro::ConvertFieldToDigit do
   subject{ MyObject.new }
 
-  context "normal object" do  
+  context "normal object" do
     context "with numeric price" do
       before{ subject.price = 10.02 }
       its(:price){ should == 10.02 }

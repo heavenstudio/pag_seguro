@@ -21,13 +21,14 @@ module PagSeguro
       "#{"%02d" % @month}-#{"%02d" % @day}"
     end
 
+    # very simple date validation, just to smoke test possible
+    # errors of switching day with month
     def valid?
-      # very simple date validation, just to smoke test possible errors of switching day with month
       @day < 31 && @month < 12
     end
 
     def <=>(other_day_of_the_year)
-      return 1  if @month > other_day_of_the_year.month
+      return  1 if @month > other_day_of_the_year.month
       return -1 if @month < other_day_of_the_year.month
       @day <=> other_day_of_the_year.day
     end

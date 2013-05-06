@@ -13,7 +13,7 @@ describe PagSeguro::Notification do
       @notification = PagSeguro::Notification.new(EMAIL, TOKEN, NOTIFICATION_CODE)
     end
   end
-  
+
   it { @notification.transaction_id.should be_present }
   it { @notification.date.should be_present }
   it { @notification.id.should be_present }
@@ -38,7 +38,7 @@ describe PagSeguro::Notification do
       item.quantity.should be_present
     end
   end
-  
+
   it { @notification.sender.email.should be_present }
   it { @notification.shipping.type.should be_present }
 end

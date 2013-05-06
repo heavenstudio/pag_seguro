@@ -7,8 +7,11 @@ module PagSeguro
     DAYS_OF_WEEK = %w(monday tuesday wednesday thursday friday saturday sunday)
     DATE_RANGE = 17856.hours
 
-    attr_accessor :name, :details, :amount_per_payment, :period, :day_of_week, :day_of_month,
-      :day_of_year, :initial_date, :final_date, :max_amount_per_period, :max_total_amount, :review_URL
+    attr_accessor :name, :details, :amount_per_payment, :period,
+                  :day_of_week, :day_of_month, :day_of_year, :initial_date,
+                  :final_date, :max_amount_per_period, :max_total_amount,
+                  :review_URL
+
     attr_reader_as_digit :amount_per_payment, :max_amount_per_period, :max_total_amount
 
     validates_presence_of :name, :period, :final_date, :max_total_amount, :max_amount_per_period

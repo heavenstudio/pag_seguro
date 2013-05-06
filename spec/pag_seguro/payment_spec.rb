@@ -48,14 +48,15 @@ describe PagSeguro::Payment do
 
     it { validate_presence_of :email }
     it { validate_presence_of :token }
-    
+
     it { should_not allow_value('10,50').for(:extra_amount) }
     it { should_not allow_value('R$ 10.50').for(:extra_amount) }
     it { should_not allow_value('-10.50').for(:extra_amount) }
+    it { should_not allow_value('10.50\nanything').for(:extra_amount) }
     it { should allow_value('10.50').for(:extra_amount) }
     it { should allow_value(10).for(:extra_amount) }
     it { should allow_value(BigDecimal.new('10.5')).for(:extra_amount) }
-        
+
     it { should_not allow_value('something.com.br').for(:redirect_url)}
     it { should allow_value('http://something.com.br').for(:redirect_url)}
 
@@ -85,17 +86,17 @@ describe PagSeguro::Payment do
       subject { build :payment_with_item }
       it { should be_valid }
     end
-  
+
     context 'checking out' do
       let(:payment){ build(:payment) }
       it 'should generate a checkout url with an external code' do
         PagSeguro::Payment.checkout_payment_url('aabbcc').should == 'https://pagseguro.uol.com.br/v2/checkout/payment.html?code=aabbcc'
       end
-      
+
       it 'should have a checkout_url_with_params' do
         payment.checkout_url_with_params.should == 'https://ws.pagseguro.uol.com.br/v2/checkout?email=myemail&token=mytoken'
       end
-      
+
       it 'should generate a checkout url based on the received response' do
         payment.stub code: 'aabbcc'
         payment.checkout_payment_url.should == 'https://pagseguro.uol.com.br/v2/checkout/payment.html?code=aabbcc'
@@ -109,18 +110,18 @@ describe PagSeguro::Payment do
         PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ 'some body info' }
         expect { payment.send(:parse_checkout_response) }.to_not raise_error
       end
-      
+
       it 'should raise PagSeguro::Errors::InvalidData if response code is 400' do
         PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 400 }
         PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ 'some error description' }
         expect { payment.send(:parse_checkout_response) }.to raise_error(PagSeguro::Errors::InvalidData)
       end
-      
+
       it 'should raise PagSeguro::Errors::Unauthorized if response code is 400' do
         PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 401 }
         expect { payment.send(:parse_checkout_response) }.to raise_error(PagSeguro::Errors::Unauthorized)
       end
-            
+
       it 'should raise PagSeguro::Errors::UnknownError if response code is not 200, 400 or 401' do
         PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :code){ 300 }
         PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ 'some response body' }
@@ -132,7 +133,7 @@ describe PagSeguro::Payment do
         PagSeguro::Payment.any_instance.stub_chain(:send_checkout, :body){ 'some response body' }
         expect { payment.send(:parse_checkout_response) }.to change { payment.response }.from(nil).to('some response body')
       end
-      
+
       it 'should be able to reset response' do
         payment.response = 'something'
         expect { payment.reset! }.to change{ payment.response }.from('something').to(nil)
