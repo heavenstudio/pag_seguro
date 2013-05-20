@@ -3,9 +3,13 @@ module PagSeguro
     include ActiveModel::Validations
     extend PagSeguro::ConvertFieldToDigit
 
+    CHECKOUT_URL = "https://ws.pagseguro.uol.com.br/v2/checkout"
+
     attr_accessor :id, :email, :token, :items, :sender, :shipping,
                   :extra_amount, :redirect_url, :max_uses, :max_age,
                   :response, :pre_approval
+    alias :reference  :id
+    alias :reference= :id=
 
     attr_reader_as_digit :extra_amount
 
@@ -17,7 +21,7 @@ module PagSeguro
     def initialize(email = nil, token = nil, options = {})
       @email        = email unless email.nil?
       @token        = token unless token.nil?
-      @id           = options[:id]
+      @id           = options[:id] || options[:reference]
       @sender       = options[:sender] || Sender.new
       @shipping     = options[:shipping]
       @items        = options[:items] || []
@@ -42,10 +46,6 @@ module PagSeguro
                          sender: @sender,
                          shipping: @shipping,
                          pre_approval: @pre_approval
-    end
-
-    def checkout_url_with_params
-      "https://ws.pagseguro.uol.com.br/v2/checkout?email=#{@email}&token=#{@token}"
     end
 
     def checkout_payment_url
@@ -92,7 +92,10 @@ module PagSeguro
       end
 
       def send_checkout
-        RestClient.post(checkout_url_with_params, checkout_xml, content_type: "application/xml"){|resp, request, result| resp }
+        params = { email: @email, token: @token }
+        RestClient.post(CHECKOUT_URL, checkout_xml,
+          params: params,
+          content_type: "application/xml"){|resp, request, result| resp }
       end
 
       def parse_checkout_response

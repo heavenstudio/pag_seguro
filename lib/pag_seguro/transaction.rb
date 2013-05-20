@@ -42,6 +42,7 @@ module PagSeguro
     def id
       @data.css("reference").first.content
     end
+    alias :reference :id
 
     def gross_amount
       @data.css("grossAmount").first.content

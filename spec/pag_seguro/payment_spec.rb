@@ -20,6 +20,11 @@ describe PagSeguro::Payment do
   it { should respond_to :code }
   it { should respond_to :date }
 
+  describe "::CHECKOUT_URL" do
+    subject { PagSeguro::Payment::CHECKOUT_URL }
+    it { should == "https://ws.pagseguro.uol.com.br/v2/checkout" }
+  end
+
   describe '#date' do
     subject{ payment.send(:parse_date) }
     before{ payment.stub response: double(:response, body: '<checkout><date>2001-02-03T04:05:06+07:00</date></checkout>') }
@@ -87,14 +92,16 @@ describe PagSeguro::Payment do
       it { should be_valid }
     end
 
+    context 'using reference instead of id' do
+      subject { build :payment_with_item, id: nil, reference: "REF1234" }
+      its(:id){ should == "REF1234" }
+      its(:reference){ should == "REF1234" }
+    end
+
     context 'checking out' do
       let(:payment){ build(:payment) }
       it 'should generate a checkout url with an external code' do
         PagSeguro::Payment.checkout_payment_url('aabbcc').should == 'https://pagseguro.uol.com.br/v2/checkout/payment.html?code=aabbcc'
-      end
-
-      it 'should have a checkout_url_with_params' do
-        payment.checkout_url_with_params.should == 'https://ws.pagseguro.uol.com.br/v2/checkout?email=myemail&token=mytoken'
       end
 
       it 'should generate a checkout url based on the received response' do
@@ -178,6 +185,21 @@ describe PagSeguro::Payment do
       payment.stub(response: true)
       payment.should_receive(:parse_date)
       payment.date
+    end
+  end
+
+  describe "#send_checkout" do
+    let(:payment){ PagSeguro::Payment.new "email@mail.com", "sometoken" }
+    it "should call pagseguro's webservice" do
+      checkout_xml = double(:checkout_xml)
+      payment.stub(checkout_xml: checkout_xml)
+      params = { email: "email@mail.com", token: "sometoken" }
+      RestClient.should_receive(:post).with(
+        PagSeguro::Payment::CHECKOUT_URL,
+        checkout_xml,
+        params: params,
+        content_type: "application/xml")
+      payment.send :send_checkout
     end
   end
 end

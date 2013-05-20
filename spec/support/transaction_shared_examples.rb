@@ -6,6 +6,10 @@ shared_examples_for "a transaction" do
   it "should have an id" do
     transaction.id.should == "REF1234"
   end
+
+  it "should have a reference" do
+    transaction.reference.should == "REF1234"
+  end
   
   it "should have a transaction id" do
     transaction.transaction_id.should == "9E884542-81B3-4419-9A75-BCC6FB495EF1"
