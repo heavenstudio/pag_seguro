@@ -14,7 +14,7 @@ module PagSeguro
     end
 
     def valid_email?
-      @email =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i && @email.size <= 60
+      @email =~ /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i && @email.size <= 60
     end
 
     def name
@@ -27,11 +27,11 @@ module PagSeguro
     end
 
     def phone_ddd
-      @phone_ddd if @phone_ddd.to_s =~ /^\d{2}$/
+      @phone_ddd if @phone_ddd.to_s =~ /\A\d{2}\z/
     end
 
     def phone_number
-      @phone_number if @phone_number.to_s =~/^\d{8,9}$/
+      @phone_number if @phone_number.to_s =~/\A\d{8,9}\z/
     end
   end
 end

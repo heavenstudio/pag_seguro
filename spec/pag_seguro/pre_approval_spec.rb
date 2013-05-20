@@ -101,6 +101,7 @@ describe PagSeguro::PreApproval do
       it { should allow_value('01-01').for(:day_of_year) }
       it { should allow_value(PagSeguro::DayOfYear.new(month: 1, day: 1)).for(:day_of_year) }
       it { should_not allow_value('1-1').for(:day_of_year) }
+      it { should_not allow_value("10-22\nanything").for(:day_of_year) }
 
       its(:period){ should == 'yearly' }
       its(:day_of_year){ should == '03-01' }

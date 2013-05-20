@@ -19,7 +19,7 @@ module PagSeguro
     validates_inclusion_of :day_of_week, in: DAYS_OF_WEEK, if: :weekly?
     validates_inclusion_of :day_of_month, in: (1..28), if: :monthly?
     validates_presence_of :day_of_year, if: :yearly?
-    validates_format_of :day_of_year, with: /^\d{2}-\d{2}$/, if: :yearly?
+    validates_format_of :day_of_year, with: /\A\d{2}-\d{2}\z/, if: :yearly?
     validate :initial_date_range, :final_date_range
     validates :max_amount_per_period, pagseguro_decimal: true
     validates :max_total_amount, pagseguro_decimal: true
