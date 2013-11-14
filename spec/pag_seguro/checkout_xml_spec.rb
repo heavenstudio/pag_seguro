@@ -44,6 +44,11 @@ describe PagSeguro::Payment do
         it { xml_content('checkout redirectURL').should == 'http://heavenstudio.com.br' }
       end
 
+      context 'with notification url' do
+        before{ payment.notification_url = 'http://heavenstudio.com.br/notification' }
+        it { xml_content('checkout notificationURL').should == 'http://heavenstudio.com.br/notification' }
+      end
+
       context 'with max uses' do
         before{ payment.max_uses = '10' }
         it { xml_content('checkout maxUses').should == '10' }
