@@ -6,7 +6,7 @@ module PagSeguro
     CHECKOUT_URL = "https://ws.pagseguro.uol.com.br/v2/checkout"
 
     attr_accessor :id, :email, :token, :items, :sender, :shipping,
-                  :extra_amount, :redirect_url, :max_uses, :max_age,
+                  :extra_amount, :redirect_url, :notification_url, :max_uses, :max_age,
                   :response, :pre_approval
     alias :reference  :id
     alias :reference= :id=
@@ -16,6 +16,7 @@ module PagSeguro
     validates_presence_of :email, :token
     validates :extra_amount, pagseguro_decimal: true
     validates_format_of :redirect_url, with: URI::regexp(%w(http https)), message: " must give a correct url for redirection", allow_blank: true
+    validates_format_of :notification_url, with: URI::regexp(%w(http https)), message: " must give a correct url for notification", allow_blank: true
     validate :max_uses_number, :max_age_number, :valid_pre_approval, :valid_items
 
     def initialize(email = nil, token = nil, options = {})
@@ -27,6 +28,7 @@ module PagSeguro
       @items        = options[:items] || []
       @extra_amount = options[:extra_amount]
       @redirect_url = options[:redirect_url]
+      @notification_url  = options[:notification_url]
       @max_uses     = options[:max_uses]
       @max_age      = options[:max_age]
       @pre_approval = options[:pre_approval]

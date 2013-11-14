@@ -6,6 +6,8 @@
     %extraAmount= payment.extra_amount
   - if payment.redirect_url.present?
     %redirectURL= payment.redirect_url
+  - if payment.notification_url.present?
+    %notificationURL= payment.notification_url
   - if payment.max_uses.present?
     %maxUses= payment.max_uses
   - if payment.max_age.present?
