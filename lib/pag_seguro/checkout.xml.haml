@@ -63,6 +63,7 @@
 
   - if pre_approval.present?
     %preApproval
+      %charge auto
       %name= pre_approval.name
       %finalDate= pre_approval.final_date.iso8601
       %maxAmountPerPeriod= pre_approval.max_amount_per_period
