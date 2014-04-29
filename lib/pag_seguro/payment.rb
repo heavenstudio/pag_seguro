@@ -94,7 +94,7 @@ module PagSeguro
       end
 
       def send_checkout
-        params = { email: @email, token: @token }
+        params = { email: @email, token: @token, ssl_version: :SSLv3 }
         RestClient.post(CHECKOUT_URL, checkout_xml,
           params: params,
           content_type: "application/xml"){|resp, request, result| resp }
