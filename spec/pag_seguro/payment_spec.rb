@@ -193,7 +193,7 @@ describe PagSeguro::Payment do
     it "should call pagseguro's webservice" do
       checkout_xml = double(:checkout_xml)
       payment.stub(checkout_xml: checkout_xml)
-      params = { email: "email@mail.com", token: "sometoken" }
+      params = { email: "email@mail.com", token: "sometoken", ssl_version: :SSLv3 }
       RestClient.should_receive(:post).with(
         PagSeguro::Payment::CHECKOUT_URL,
         checkout_xml,

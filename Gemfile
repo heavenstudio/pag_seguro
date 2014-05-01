@@ -7,7 +7,7 @@ gemspec
 gem 'rspec'
 gem 'simplecov', require: false
 gem 'guard-rspec'
-gem 'shoulda-matchers'
+gem 'shoulda-matchers', '2.5.0'
 gem "factory_girl", "~> 4.0"
 gem 'growl'
 gem 'pry'
