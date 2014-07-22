@@ -27,6 +27,7 @@ module PagSeguro
     def self.api_url(path)
       File.join(root_uri(:api), path)
     end
+
     def self.site_url(path)
       File.join(root_uri(:site), path)
     end

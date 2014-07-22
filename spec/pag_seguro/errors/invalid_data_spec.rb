@@ -17,6 +17,6 @@ end
 
 describe PagSeguro::Errors::InvalidData do
   it "should be able to parse an error xml and raise the error codes" do
-    lambda { raise PagSeguro::Errors::InvalidData.new(invalid_data_xml) }.should raise_error(PagSeguro::Errors::InvalidData, "404: Not Found\n422: Unauthorized\n")
+    expect { raise PagSeguro::Errors::InvalidData.new(invalid_data_xml) }.to raise_error(PagSeguro::Errors::InvalidData, "404: Not Found\n422: Unauthorized\n")
   end
 end

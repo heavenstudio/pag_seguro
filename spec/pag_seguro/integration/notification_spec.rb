@@ -14,31 +14,31 @@ describe PagSeguro::Notification do
     end
   end
 
-  it { @notification.transaction_id.should be_present }
-  it { @notification.date.should be_present }
-  it { @notification.id.should be_present }
-  it { @notification.type.should be_present }
-  it { @notification.status.should be_present }
-  it { @notification.payment_method.type.should be_present }
-  it { @notification.payment_method.code.should be_present }
-  it { @notification.gross_amount.should be_present }
-  it { @notification.discount_amount.should be_present }
-  it { @notification.fee_amount.should be_present }
-  it { @notification.net_amount.should be_present }
-  it { @notification.extra_amount.should be_present }
-  it { @notification.installment_count.should be_present }
-  it { @notification.item_count.should be_present }
-  it { @notification.items.should be_present }
+  it { expect(@notification.transaction_id).to be_present }
+  it { expect(@notification.date).to be_present }
+  it { expect(@notification.id).to be_present }
+  it { expect(@notification.type).to be_present }
+  it { expect(@notification.status).to be_present }
+  it { expect(@notification.payment_method.type).to be_present }
+  it { expect(@notification.payment_method.code).to be_present }
+  it { expect(@notification.gross_amount).to be_present }
+  it { expect(@notification.discount_amount).to be_present }
+  it { expect(@notification.fee_amount).to be_present }
+  it { expect(@notification.net_amount).to be_present }
+  it { expect(@notification.extra_amount).to be_present }
+  it { expect(@notification.installment_count).to be_present }
+  it { expect(@notification.item_count).to be_present }
+  it { expect(@notification.items).to be_present }
 
   it "should have all required item attributes" do
     @notification.items.each do |item|
-      item.id.should be_present
-      item.description.should be_present
-      item.amount.should be_present
-      item.quantity.should be_present
+      expect(item.id).to be_present
+      expect(item.description).to be_present
+      expect(item.amount).to be_present
+      expect(item.quantity).to be_present
     end
   end
 
-  it { @notification.sender.email.should be_present }
-  it { @notification.shipping.type.should be_present }
+  it { expect(@notification.sender.email).to be_present }
+  it { expect(@notification.shipping.type).to be_present }
 end

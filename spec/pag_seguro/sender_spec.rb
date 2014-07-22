@@ -3,10 +3,10 @@ require "spec_helper"
 
 describe PagSeguro::Sender do
   context "instance" do
-    it { should have_attribute_accessor(:email) }
-    it { should have_attribute_accessor(:name) }
-    it { should have_attribute_accessor(:phone_ddd) }
-    it { should have_attribute_accessor(:phone_number) }
+    it { is_expected.to have_attribute_accessor(:email) }
+    it { is_expected.to have_attribute_accessor(:name) }
+    it { is_expected.to have_attribute_accessor(:phone_ddd) }
+    it { is_expected.to have_attribute_accessor(:phone_number) }
 
     context "initialized with all attributes" do
       subject { PagSeguro::Sender.new attributes_for(:sender) }
@@ -23,37 +23,37 @@ describe PagSeguro::Sender do
 
     context "with nil name" do
       subject { build :sender, name: nil }
-      it { should_not be_a_valid_name }
+      it { is_expected.not_to be_a_valid_name }
       its(:name){ should be_nil }
     end
 
     context "with name Joao" do
       subject { build :sender, name: "Joao" }
-      it { should_not be_a_valid_name }
+      it { is_expected.not_to be_a_valid_name }
       its(:name){ should be_nil }
     end
 
     context "with name Joao Paulo" do
       subject { build :sender, name: "Joao Paulo" }
-      it { should be_a_valid_name }
+      it { is_expected.to be_a_valid_name }
       its(:name){ should == "Joao Paulo" }
     end
 
     context "with name João Paulo" do
       subject { build :sender, name: "João Paulo" }
-      it { should be_a_valid_name }
+      it { is_expected.to be_a_valid_name }
       its(:name){ should == "João Paulo" }
     end
 
     context "with very big name" do
       subject { build :sender, name: ("a" * 50)+" "+("b" * 10) }
-      it { should be_a_valid_name }
+      it { is_expected.to be_a_valid_name }
       its(:name){ should == "a" * 50 }
     end
 
     context "with double spaces in name" do
       subject { build :sender, name: "Stefano   Benatti" }
-      it { should be_a_valid_name }
+      it { is_expected.to be_a_valid_name }
       its(:name){ should == "Stefano Benatti" }
     end
 
