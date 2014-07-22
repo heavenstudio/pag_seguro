@@ -20,6 +20,16 @@ describe PagSeguro::Payment do
   it { should respond_to :code }
   it { should respond_to :date }
 
+  before do
+    PagSeguro::Url.environment = :production
+  end
+
+  describe "sandbox ::CHECKOUT_URL" do
+    PagSeguro::Url.environment = :sandbox
+    subject { PagSeguro::Payment::CHECKOUT_URL }
+    it { should == "https://sandbox.ws.pagseguro.uol.com.br/v2/checkout" }
+  end
+
   describe "::CHECKOUT_URL" do
     subject { PagSeguro::Payment::CHECKOUT_URL }
     it { should == "https://ws.pagseguro.uol.com.br/v2/checkout" }
