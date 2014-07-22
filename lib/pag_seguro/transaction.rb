@@ -5,7 +5,7 @@ module PagSeguro
   class Transaction
     attr_accessor :data
 
-    PAGSEGURO_TRANSACTIONS_URL  = "https://ws.pagseguro.uol.com.br/v2/transactions"
+    PAGSEGURO_TRANSACTIONS_URL  = PagSeguro::Url.api_url("/transactions")
 
     # possible status values
     PAGSEGURO_PROCESSING        = 1

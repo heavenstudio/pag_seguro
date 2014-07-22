@@ -3,7 +3,7 @@ module PagSeguro
     include ActiveModel::Validations
     extend PagSeguro::ConvertFieldToDigit
 
-    CHECKOUT_URL = "https://ws.pagseguro.uol.com.br/v2/checkout"
+    CHECKOUT_URL = PagSeguro::Url.api_url("/checkout")
 
     attr_accessor :id, :email, :token, :items, :sender, :shipping,
                   :extra_amount, :redirect_url, :notification_url, :max_uses, :max_age,
@@ -35,7 +35,7 @@ module PagSeguro
     end
 
     def self.checkout_payment_url(code)
-      "https://pagseguro.uol.com.br/v2/checkout/payment.html?code=#{code}"
+      PagSeguro::Url.site_url("/checkout/payment.html?code=#{code}")
     end
 
     def checkout_xml
