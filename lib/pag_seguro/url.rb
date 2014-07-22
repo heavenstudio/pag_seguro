@@ -31,5 +31,6 @@ module PagSeguro
     def self.site_url(path)
       File.join(root_uri(:site), path)
     end
+    InvalidEnvironmentError = Class.new(StandardError)
   end
 end
