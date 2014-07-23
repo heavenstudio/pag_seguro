@@ -6,7 +6,7 @@ describe PagSeguro::Url do
     expect(PagSeguro::Url.environment).to eq :production
   end
 
-  it "should change the enviroment" do
+  it "should change the environment" do
     PagSeguro::Url.environment = :sandbox
     expect(PagSeguro::Url.environment).to eq :sandbox
   end

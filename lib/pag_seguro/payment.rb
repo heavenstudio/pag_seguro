@@ -3,8 +3,6 @@ module PagSeguro
     include ActiveModel::Validations
     extend PagSeguro::ConvertFieldToDigit
 
-    CHECKOUT_URL = PagSeguro::Url.api_url("/checkout")
-
     attr_accessor :id, :email, :token, :items, :sender, :shipping,
                   :extra_amount, :redirect_url, :notification_url, :max_uses, :max_age,
                   :response, :pre_approval
@@ -34,6 +32,10 @@ module PagSeguro
       @pre_approval = options[:pre_approval]
     end
 
+    def self.checkout_url
+      PagSeguro::Url.api_url("/checkout")
+    end
+
     def self.checkout_payment_url(code)
       PagSeguro::Url.site_url("/checkout/payment.html?code=#{code}")
     end
@@ -52,6 +54,10 @@ module PagSeguro
 
     def checkout_payment_url
       self.class.checkout_payment_url(code)
+    end
+
+    def checkout_url
+      self.class.checkout_url
     end
 
     def code
@@ -95,7 +101,7 @@ module PagSeguro
 
       def send_checkout
         params = { email: @email, token: @token, ssl_version: :SSLv3 }
-        RestClient.post(CHECKOUT_URL, checkout_xml,
+        RestClient.post(checkout_url, checkout_xml,
           params: params,
           content_type: "application/xml"){|resp, request, result| resp }
       end

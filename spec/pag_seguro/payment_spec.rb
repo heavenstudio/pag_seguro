@@ -20,10 +20,24 @@ describe PagSeguro::Payment do
   it { is_expected.to respond_to :code }
   it { is_expected.to respond_to :date }
 
+  context "sandbox" do
+    before do
+      PagSeguro::Url.environment= :sandbox
+    end
+
+    describe "checkout url" do
+      subject { PagSeguro::Payment.checkout_url }
+      it { is_expected.to eq("https://ws.sandbox.pagseguro.uol.com.br/v2/checkout") }
+    end
+  end
+
   context "production" do
-    describe "::CHECKOUT_URL" do
-      PagSeguro::Url.environment=:production
-      subject { PagSeguro::Payment::CHECKOUT_URL }
+    before do
+      PagSeguro::Url.environment= :production
+    end
+
+    describe "checkout url" do
+      subject { PagSeguro::Payment.checkout_url }
       it { is_expected.to eq("https://ws.pagseguro.uol.com.br/v2/checkout") }
     end
 
@@ -197,7 +211,7 @@ describe PagSeguro::Payment do
         allow(payment).to receive_messages(checkout_xml: checkout_xml)
         params = { email: "email@mail.com", token: "sometoken", ssl_version: :SSLv3 }
         expect(RestClient).to receive(:post).with(
-          PagSeguro::Payment::CHECKOUT_URL,
+          PagSeguro::Payment.checkout_url,
           checkout_xml,
           params: params,
           content_type: "application/xml")
