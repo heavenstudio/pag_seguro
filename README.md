@@ -18,6 +18,22 @@ Além disso, é necessário que tenha uma conta no pag seguro, e que habilite as
     Em [Integrações -> Pagamentos via API](https://pagseguro.uol.com.br/integracao/pagamentos-via-api.jhtml) é necessário ativar a opção "Quero receber somente pagamentos via API."
     Em [Integrações -> Notificação de transações](https://pagseguro.uol.com.br/integracao/notificacao-de-transacoes.jhtml) é necessário ativar a notificação de transações e definir a url de retorno
 
+### Sandbox
+
+Altere o ambiente para `sandbox`:
+
+```ruby
+# config/initializers/pagseguro.rb
+
+PagSeguro::Url.environment = :sandbox # default: :production
+```
+Você pode alterar o ambiente a qualquer momento para `:production`
+
+```ruby
+PagSeguro::Url.environment = :production
+```
+Acesse a página de [Sandbox](https://sandbox.pagseguro.uol.com.br/) no pag seguro para obter seus [dados de teste](https://sandbox.pagseguro.uol.com.br/dados-de-teste.html).
+
 ## Documentação
 
 ### Classes e Atributos
