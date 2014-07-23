@@ -10,7 +10,7 @@ module PagSeguro
 
     private
       def transaction_data(email, token, notification_code)
-        notification_url = "#{transactions_url}/notifications/#{notification_code}"
+        notification_url = "#{Transaction.transactions_url}/notifications/#{notification_code}"
         super RestClient.get notification_url, params: {email: email, token: token}
       end
   end
