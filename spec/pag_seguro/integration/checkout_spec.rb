@@ -14,11 +14,11 @@ describe PagSeguro::Payment do
     let(:payment){ build :payment_with_all_fields, email: EMAIL, token: TOKEN }
     subject { payment }
 
-    its('code.size'){ should == 32 }
-    its(:date){ should be_an_instance_of(DateTime) }
+    its('code.size'){ is_expected.to eq(32) }
+    its(:date){ is_expected.to be_an_instance_of(DateTime) }
 
     it "should give a response code of 200 for the user pagseguro url" do
-      RestClient.get(payment.checkout_payment_url).code.should == 200
+      expect(RestClient.get(payment.checkout_payment_url).code).to eq(200)
     end
   end
 
@@ -26,11 +26,11 @@ describe PagSeguro::Payment do
     let(:payment){ build :payment_with_item, email: EMAIL, token: TOKEN, pre_approval: build(:minimum_pre_approval) }
     subject { payment }
 
-    its('code.size'){ should == 32 }
-    its(:date){ should be_an_instance_of(DateTime) }
+    its('code.size'){ is_expected.to eq(32) }
+    its(:date){ is_expected.to be_an_instance_of(DateTime) }
 
     it "should give a response code of 200 for the user pagseguro url" do
-      RestClient.get(payment.checkout_payment_url).code.should == 200
+      expect(RestClient.get(payment.checkout_payment_url).code).to eq(200)
     end
   end
 
@@ -38,11 +38,11 @@ describe PagSeguro::Payment do
     let(:payment){ build :payment_with_items, email: EMAIL, token: TOKEN }
     subject { payment }
 
-    its('code.size'){ should == 32 }
-    its(:date){ should be_an_instance_of(DateTime) }
+    its('code.size'){ is_expected.to eq(32) }
+    its(:date){ is_expected.to be_an_instance_of(DateTime) }
 
     it "should give a response code of 200 for the user pagseguro url" do
-      RestClient.get(payment.checkout_payment_url).code.should == 200
+      expect(RestClient.get(payment.checkout_payment_url).code).to eq(200)
     end
   end
 

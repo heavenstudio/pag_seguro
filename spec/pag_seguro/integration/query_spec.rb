@@ -15,33 +15,33 @@ describe PagSeguro::Query do
       end
     end
 
-    it { @query.transaction_id.should be_present }
-    it { @query.date.should be_present }
-    it { @query.id.should be_present }
-    it { @query.type.should be_present }
-    it { @query.status.should be_present }
-    it { @query.payment_method.type.should be_present }
-    it { @query.payment_method.code.should be_present }
-    it { @query.gross_amount.should be_present }
-    it { @query.discount_amount.should be_present }
-    it { @query.fee_amount.should be_present }
-    it { @query.net_amount.should be_present }
-    it { @query.extra_amount.should be_present }
-    it { @query.installment_count.should be_present }
-    it { @query.item_count.should be_present }
-    it { @query.items.should be_present }
+    it { expect(@query.transaction_id).to be_present }
+    it { expect(@query.date).to be_present }
+    it { expect(@query.id).to be_present }
+    it { expect(@query.type).to be_present }
+    it { expect(@query.status).to be_present }
+    it { expect(@query.payment_method.type).to be_present }
+    it { expect(@query.payment_method.code).to be_present }
+    it { expect(@query.gross_amount).to be_present }
+    it { expect(@query.discount_amount).to be_present }
+    it { expect(@query.fee_amount).to be_present }
+    it { expect(@query.net_amount).to be_present }
+    it { expect(@query.extra_amount).to be_present }
+    it { expect(@query.installment_count).to be_present }
+    it { expect(@query.item_count).to be_present }
+    it { expect(@query.items).to be_present }
 
     it "should have all required item attributes" do
       @query.items.each do |item|
-        item.id.should be_present
-        item.description.should be_present
-        item.amount.should be_present
-        item.quantity.should be_present
+        expect(item.id).to be_present
+        expect(item.description).to be_present
+        expect(item.amount).to be_present
+        expect(item.quantity).to be_present
       end
     end
 
-    it { @query.sender.email.should be_present }
-    it { @query.shipping.type.should be_present }
+    it { expect(@query.sender.email).to be_present }
+    it { expect(@query.shipping.type).to be_present }
   end
 
   describe "::find" do
@@ -58,8 +58,8 @@ describe PagSeguro::Query do
 
     it "should return an array of Transactions" do
       @transactions.each do |transaction|
-        transaction.should be_an_instance_of(PagSeguro::Transaction)
-        transaction.id.should be_present
+        expect(transaction).to be_an_instance_of(PagSeguro::Transaction)
+        expect(transaction.id).to be_present
       end
     end
   end

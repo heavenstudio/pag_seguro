@@ -9,7 +9,7 @@ module PagSeguro
     end
 
     def self.find(email, token, options={})
-      url = Transaction::PAGSEGURO_TRANSACTIONS_URL
+      url = Transaction.transactions_url
       url += "/abandoned" if options[:abandoned]
 
       transactions_data = Nokogiri::XML(RestClient.get url, params: search_params(email, token, options))
@@ -40,7 +40,7 @@ module PagSeguro
 
     private
       def transaction_data(email, token, transaction_code)
-        transaction_url = "#{PAGSEGURO_TRANSACTIONS_URL}/#{transaction_code}"
+        transaction_url = "#{Transaction.transactions_url}/#{transaction_code}"
         super RestClient.get transaction_url, params: {email: email, token: token}
       end
   end

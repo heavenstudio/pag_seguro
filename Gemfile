@@ -5,6 +5,7 @@ gemspec
 
 # test or development gems
 gem 'rspec'
+gem 'rspec-its'
 gem 'simplecov', require: false
 gem 'guard-rspec'
 gem 'shoulda-matchers', '2.5.0'

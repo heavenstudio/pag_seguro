@@ -5,8 +5,6 @@ module PagSeguro
   class Transaction
     attr_accessor :data
 
-    PAGSEGURO_TRANSACTIONS_URL  = "https://ws.pagseguro.uol.com.br/v2/transactions"
-
     # possible status values
     PAGSEGURO_PROCESSING        = 1
     PAGSEGURO_IN_ANALYSIS       = 2
@@ -33,6 +31,10 @@ module PagSeguro
       when PAGSEGURO_RETURNED    then :returned
       when PAGSEGURO_CANCELLED   then :cancelled
       end
+    end
+
+    def self.transactions_url
+      PagSeguro::Url.api_url("/transactions")
     end
 
     def initialize(transaction_xml)

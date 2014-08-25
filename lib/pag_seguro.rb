@@ -15,6 +15,7 @@ require "pagseguro_decimal_validator"
 require "convert_field_to_digit"
 
 # PagSeguro classes
+require "url"
 require "item"
 require "payment"
 require "payment_method"

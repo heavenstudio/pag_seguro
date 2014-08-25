@@ -2,8 +2,8 @@
 require 'spec_helper'
 
 describe PagSeguro::PaymentMethod do
-  it { should have_attribute_accessor(:code) }
-  it { should have_attribute_accessor(:type) }
+  it { is_expected.to have_attribute_accessor(:code) }
+  it { is_expected.to have_attribute_accessor(:type) }
 
   context "initalized with code and type" do
     subject { build :payment_method, code: "101", type: "1" }
@@ -17,33 +17,33 @@ describe PagSeguro::PaymentMethod do
 
     context "with type 1" do
       subject { build :payment_method, type: 1 }
-      it { should be_credit_card }
+      it { is_expected.to be_credit_card }
     end
 
     context "with if type 2" do
       subject { build :payment_method, type: 2 }
-      it { should be_bank_bill }
+      it { is_expected.to be_bank_bill }
     end
 
     context "with if type 3" do
       subject { build :payment_method, type: 3 }
-      it { should be_online_debit }
+      it { is_expected.to be_online_debit }
     end
 
     context "with if type 4" do
       subject { build :payment_method, type: 4 }
-      it { should be_pag_seguro_balance }
+      it { is_expected.to be_pag_seguro_balance }
     end
 
     context "with type 5" do
       subject { build :payment_method, type: 5 }
-      it { should be_oi_paggo }
+      it { is_expected.to be_oi_paggo }
     end
   end
 
   describe "codes" do
     def should_have_meaning_for_code(meaning, code)
-      PagSeguro::PaymentMethod.new(code: code).name.should be == meaning
+      expect(PagSeguro::PaymentMethod.new(code: code).name).to eq(meaning)
     end
 
     it { should_have_meaning_for_code("Cartão de crédito Visa", 101) }

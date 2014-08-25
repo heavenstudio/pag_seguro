@@ -2,11 +2,11 @@ require 'simplecov'
 SimpleCov.start do
   add_filter "spec/"
 end
-
+require 'rspec/its'
 require 'yaml'
 require File.dirname(__FILE__) + "/../lib/pag_seguro"
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
-require 'shoulda-matchers'
+require 'shoulda/matchers'
 require 'factory_girl'
 
 include FactoryGirl::Syntax::Methods

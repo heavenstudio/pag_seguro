@@ -2,6 +2,6 @@ require 'spec_helper'
 
 describe PagSeguro do
   it "should have a version" do
-    PagSeguro::VERSION.should_not be_empty
+    expect(PagSeguro::VERSION).not_to be_empty
   end
 end
