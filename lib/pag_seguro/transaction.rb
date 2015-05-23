@@ -92,6 +92,12 @@ module PagSeguro
       end
     end
 
+    def payment_link
+      if @data.css("paymentLink").present?
+        @data.css("paymentLink").first.content
+      end
+    end
+
     def items
       @data.css("items item").map do |i|
         Item.new id: parse_item(i, "id"),
