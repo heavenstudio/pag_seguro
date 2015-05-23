@@ -62,8 +62,8 @@ describe PagSeguro::PreApproval do
     its(:name){ should == "Super seguro para notebook" }
     its(:details){ should == "Toda segunda feira será cobrado o valor de R$150,00 para o seguro do notebook" }
     its(:amount_per_payment){ should == '150.00' }
-    its(:initial_date){ Date.new(2015, 1, 17) }
-    its(:final_date){ Date.new(2017, 1, 17) }
+    its(:initial_date){ Date.new(2015, 5, 25) }
+    its(:final_date){ Date.new(2017, 5, 22) }
     its(:max_amount_per_period){ should == '200.00' }
     its(:max_total_amount){ should == '900.00' }
     its(:review_URL){ should == "http://sounoob.com.br/produto1" }

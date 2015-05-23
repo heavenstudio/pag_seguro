@@ -20,6 +20,7 @@ describe PagSeguro::Query do
     it { expect(@query.id).to be_present }
     it { expect(@query.type).to be_present }
     it { expect(@query.status).to be_present }
+    it { expect(@query.last_event_date).to be_present }
     it { expect(@query.payment_method.type).to be_present }
     it { expect(@query.payment_method.code).to be_present }
     it { expect(@query.gross_amount).to be_present }

@@ -82,6 +82,16 @@ module PagSeguro
       DateTime.iso8601( @data.css("date").first.content )
     end
 
+    def last_event_date
+      DateTime.iso8601( @data.css("lastEventDate").first.content )
+    end
+
+    def escrow_end_date
+      if @data.css("escrowEndDate").present?
+        DateTime.iso8601( @data.css("escrowEndDate").first.content )
+      end
+    end
+
     def items
       @data.css("items item").map do |i|
         Item.new id: parse_item(i, "id"),

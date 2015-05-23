@@ -144,8 +144,8 @@ describe PagSeguro::Payment do
         it { expect(xml_content('checkout preApproval name')).to eq('Super seguro para notebook') }
         it { expect(xml_content('checkout preApproval details')).to eq('Toda segunda feira será cobrado o valor de R$150,00 para o seguro do notebook') }
         it { expect(xml_content('checkout preApproval amountPerPayment')).to eq('150.00') }
-        it { expect(xml_content('checkout preApproval initialDate')).to eq('2015-01-17T00:00:00+00:00') }
-        it { expect(xml_content('checkout preApproval finalDate')).to eq('2017-01-17T00:00:00+00:00') }
+        it { expect(xml_content('checkout preApproval initialDate')).to eq('2015-05-25T00:00:00+00:00') }
+        it { expect(xml_content('checkout preApproval finalDate')).to eq('2017-05-22T00:00:00+00:00') }
         it { expect(xml_content('checkout preApproval maxAmountPerPeriod')).to eq('200.00') }
         it { expect(xml_content('checkout preApproval maxTotalAmount')).to eq('900.00') }
         it { expect(xml_content('checkout preApproval reviewURL')).to eq('http://sounoob.com.br/produto1') }
