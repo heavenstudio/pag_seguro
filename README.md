@@ -89,9 +89,9 @@ Com exceção do atributo response (que é utilizado para armazenar a resposta e
 
 ### API de Notificação
 
-As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na [Notificação de transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-codigo.html). Se quiser configurar uma url dinâmica para envio das notificação é necessário ativar a página de redirecionamento dinâmico em [Integrações > Página de redirecionamento](https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml), e passar o argumento `redirect_url` para o objeto PagSeguro::Payment:
+As notificações de alteração no status da compra no PagSeguro serão enviadas para a URL que tiver configurado na [Notificação de transações](https://pagseguro.uol.com.br/v2/guia-de-integracao/consulta-de-transacoes-por-codigo.html). Se quiser configurar uma url dinâmica para envio das notificação é necessário ativar a página de redirecionamento dinâmico em [Integrações > Página de redirecionamento](https://pagseguro.uol.com.br/integracao/pagina-de-redirecionamento.jhtml), e passar o argumento `notification_url` para o objeto PagSeguro::Payment:
 
-    PagSeguro::Payment.new(email, token, id: invoice.id, redirect_url: "http://lojamodelo.com.br/checkout")
+    PagSeguro::Payment.new(email, token, id: invoice.id, notification_url: "http://lojamodelo.com.br/checkout")
 
 O código da notificação é enviado pelo PagSeguro através do parâmentro `notificationCode` em uma requisição do tipo POST. Segue um exemplo de uso da notificação em uma aplicação rails (este exemplo supõe a existência de um `resources :notifications` em suas rotas, e um modelo `Invoice` responsável pelos pagamentos):
 
