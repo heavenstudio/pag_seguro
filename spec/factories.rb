@@ -82,7 +82,7 @@ FactoryGirl.define do
 
   factory :minimum_pre_approval, class: PagSeguro::PreApproval do
     name                  "Super seguro para notebook"
-    final_date            Date.new(2014, 1, 17)
+    final_date            Date.new(2017, 5, 22)
     max_amount_per_period BigDecimal.new('200.00')
     max_total_amount      BigDecimal.new('900.00')
     period                :weekly
@@ -95,8 +95,8 @@ FactoryGirl.define do
     factory :pre_approval do
       details             "Toda segunda feira será cobrado o valor de R$150,00 para o seguro do notebook"
       amount_per_payment  BigDecimal.new('150.00')
-      initial_date        Date.new(2015, 1, 17)
-      final_date          Date.new(2017, 1, 17)
+      initial_date        Date.new(2015, 5, 25)
+      final_date          Date.new(2017, 5, 22)
       review_URL          "http://sounoob.com.br/produto1"
     end
 

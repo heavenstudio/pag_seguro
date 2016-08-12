@@ -75,7 +75,7 @@ shared_examples_for "a transaction" do
 
     it "should have a sender" do
       @sender = transaction.sender
-      expect(@sender.name).to eq("José Comprador")
+      expect(@sender.name).to eq("Jose Comprador")
       expect(@sender.email).to eq("comprador@uol.com.br")
       expect(@sender.phone_ddd).to eq("11")
       @sender.phone_number == "56273440"
@@ -87,6 +87,22 @@ shared_examples_for "a transaction" do
       expect(transaction.date.year).to eq(2011)
       expect(transaction.date.month).to eq(2)
       expect(transaction.date.day).to eq(10)
+    end
+
+    it "should have a last event date" do
+      expect(transaction.last_event_date).to be_present
+      expect(transaction.last_event_date).to be_an_instance_of(DateTime)
+      expect(transaction.last_event_date.year).to eq(2011)
+      expect(transaction.last_event_date.month).to eq(2)
+      expect(transaction.last_event_date.day).to eq(10)
+    end
+
+    it "should have a escrow end date" do
+      expect(transaction.escrow_end_date).to be_present
+      expect(transaction.escrow_end_date).to be_an_instance_of(DateTime)
+      expect(transaction.escrow_end_date.year).to eq(2011)
+      expect(transaction.escrow_end_date.month).to eq(2)
+      expect(transaction.escrow_end_date.day).to eq(10)
     end
 
     it "should have a shipping" do

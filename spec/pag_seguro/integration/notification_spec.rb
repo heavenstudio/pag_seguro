@@ -19,6 +19,7 @@ describe PagSeguro::Notification do
   it { expect(@notification.id).to be_present }
   it { expect(@notification.type).to be_present }
   it { expect(@notification.status).to be_present }
+  it { expect(@notification.last_event_date).to be_present }
   it { expect(@notification.payment_method.type).to be_present }
   it { expect(@notification.payment_method.code).to be_present }
   it { expect(@notification.gross_amount).to be_present }
